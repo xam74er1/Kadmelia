@@ -121,108 +121,13 @@ int * hashB(char * msg){
     return res;
 }
 
-/*
- *
- *
- *
- int rol(int num, int cnt) {
-    return (num << cnt) | (num >> (32 - cnt));
-}
-
-void fill(int value, char* arr, int off) {
-    arr[off + 0] = (char) ((value >> 24) & 0xff);
-    arr[off + 1] = (char) ((value >> 16) & 0xff);
-    arr[off + 2] = (char) ((value >> 8) & 0xff);
-    arr[off + 3] = (char) ((value >> 0) & 0xff);
-}
-char* hash(char * tab){
-
-    long length =  sizeof(tab) / sizeof(tab[0]) ;
-    long lengthPading = (((length + 8) >> 6) + 1) * 16;
-    int pading[lengthPading];
-    int i =0;
-    for(i = 0; i < length; i++) {
-        pading[i >> 2] |= tab[i] << (24 - (i % 4) * 8);
-    }
+int * xordistanceTableau(int * srcA,int * srcB,int length){
 
 
-    pading[i >> 2] |= 0x80 << (24 - (i % 4) * 8);
-
-    pading[lengthPading-1] = length * 8;
-//Caclule du hash de 160
-    //int* w = (int *) calloc(80,sizeof(int)) ;
-    int w[80];
-    for(int i =0;i<80;i++){
-        w[i] = 0;
-    }
-
-    int a =  1732584193;
-    int b = -271733879;
-    int c = -1732584194;
-    int d =  271733878;
-    int e = -1009589776;
-
-    for(i = 0; i < lengthPading; i += 16) {
-        int olda = a;
-        int oldb = b;
-        int oldc = c;
-        int oldd = d;
-        int olde = e;
-
-        printf(" a : %d \n",a);
-        printf(" b : %d \n",b);
-        printf(" c : %d \n",c);
-        printf(" d : %d \n",d);
-        printf(" e : %d \n",e);
-        printf("\n");
-
-        for(int j = 0; j < 80; j++) {
-            w[j] = (j < 16) ? pading[i + j] :
-                   ( rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1) );
-
-            int t = rol(a, 5) + e + w[j] +
-                    ( (j < 20) ?  1518500249 + ((b & c) | ((~b) & d))
-                               : (j < 40) ?  1859775393 + (b ^ c ^ d)
-                                          : (j < 60) ? -1894007588 + ((b & c) | (b & d) | (c & d))
-                                                     : -899497514 + (b ^ c ^ d) );
-            e = d;
-            d = c;
-            c = rol(b, 30);
-            b = a;
-            a = t;
-        }
-
-        a = a + olda;
-        b = b + oldb;
-        c = c + oldc;
-        d = d + oldd;
-        e = e + olde;
-    }
-
-    printf("\n\n");
-    printf(" a : %d \n",a);
-    printf(" b : %d \n",b);
-    printf(" c : %d \n",c);
-    printf(" d : %d \n",d);
-    printf(" e : %d \n",e);
-    printf("\n");
-
-// Convert result to a byte array
-    char * digest = malloc(20);
-    fill(a, digest, 0);
-    fill(b, digest, 4);
-    fill(c, digest, 8);
-    fill(d, digest, 12);
-    fill(e, digest, 16);
-
-    return digest;
-}
-*/
-int xordistanceTableau(char * srcA,char * srcB){
-    int min = sizeof(srcA)< sizeof(srcB) ? sizeof(srcB) : sizeof(srcA);
-    char * xor = malloc(sizeof(srcA[0])*min);
-    for (int i = 0; i <min ; ++i) {
+    int * xor = malloc(sizeof(srcA[0])*length);
+    for (int i = 0; i <length ; ++i) {
         xor[i] = srcA[i] ^ srcB[i];
+        printf("%x ^ %x = %x \n ",srcA[i],srcB[i],xor[i]);
     }
 
     return xor;
@@ -234,7 +139,7 @@ int xordistance(int a , int b ){
 
 int main() {
     printf("start 4\n");
-    char * str = "hello";
+    char * str = "Hello";
 
     int * res = hashB(str);
 
@@ -250,9 +155,9 @@ int main() {
 
     printf("\n");
 
-    char * xdistance =  xordistanceTableau(res,resAutre);
+    int * xdistance =  xordistanceTableau(res,resAutre,5);
     printf("\n");
-    for(int i =0;i<20;i++){
+    for(int i =0;i<5;i++){
         printf("%x ", xdistance[i]);
     }
 

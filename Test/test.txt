@@ -4,6 +4,11 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#define INTBUFFER 20
+#define BUFFERSIZE 80
+
+#include <unistd.h>
+#include <limits.h>
 
 
 
@@ -48,7 +53,7 @@ int * hashB(char * msg){
 
     length = length+1+nb;
     int n = length/64;
-    unsigned int w[80];
+    unsigned int w[BUFFERSIZE];
     int buff1;
 
     int h0 = 0x67452301;
@@ -137,7 +142,50 @@ int xordistance(int a , int b ){
     return a^b;
 }
 
-int main() {
+int sha1File(char * path){
+    FILE *fptr;
+long sizeFile = -1;
+    char * buf;
+
+    fptr = fopen(path,"r");
+if(fptr==NULL){
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("Current working dir: %s\n", cwd);
+    }
+    printf("Error we can not read %s ",path);
+    exit(1);
+
+}
+//Taille du fichier
+
+    fseek(fptr, 0L, SEEK_END);
+    sizeFile = ftell(fptr);
+    fseek(fptr, 0L, SEEK_SET);
+
+//Afection du tableau
+//On lis pas cou de 80 octel
+
+buf = (char * ) calloc(BUFFERSIZE,sizeof(char));
+
+long index = 0;
+
+while(index<sizeFile) {
+/* copy all the text into the buffer */
+    fread(buf, sizeof(char), BUFFERSIZE, fptr);
+
+    for (int i = 0; i < BUFFERSIZE; ++i) {
+        printf("%d ",buf[i]);
+    }
+    printf("\n");
+index+=BUFFERSIZE;
+}
+    free(buf);
+    fclose(fptr);
+    return 0;
+}
+
+void testSHA(){
     printf("start 4\n");
     char * str = "Hello";
 
@@ -162,5 +210,15 @@ int main() {
     }
 
     printf("\nfin\n");
+}
+
+void testFile(){
+    char * path = "../Test/test.txt";
+    sha1File(path);
+}
+
+int main() {
+    //testSHA();
+    testFile();
     return 0;
 }

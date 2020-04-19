@@ -3,4 +3,5 @@ project(groupe7)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(test sha1.c)
+add_executable(test testFifo.c Main.c kademiliaTest.c kademiliaTest.h utilitaire.c utilitaire.h testFifo.c)
+#add_executable(test testFifo.c )

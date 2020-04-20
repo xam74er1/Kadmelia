@@ -61,7 +61,11 @@ void createFifo(Node *fromNode) {
 
     char * fifoName=getPipeFromId(fromNode->id);
     printf("createFifo : %s \n",fifoName);
-    mkfifo(fifoName, 0666);
+    if(mkfifo(fifoName, 0644)!=0){
+        printf("impossible de cree la fifo");
+    }else{
+        printf("fifo cree");
+    }
 
 }
 
@@ -96,23 +100,36 @@ void setTabIndex(Node * node,int index){
 
 
 void send(Node *node, char *str) {
-    printf(" start send \n");
+    umask(0);
+    char nomTube[] = "nodespace/essai.fifo";
+
     char * fitoPath = getPipeFromId(node->id);
     printf("write into %s  \n ",fitoPath);
-    int pipe = open(fitoPath,O_WRONLY);
-    printf("pipe %d",pipe);
-    write(pipe,str,strlen(str)+1);
-    printf("end pipe");
-    close(pipe);
+
+    int pipe ;
+    if((pipe = open(fitoPath ,O_RDWR) )== -1){
+
+        printf("impossible de lire \n");
+    }else {
+
+        write(pipe, str, strlen(str) + 1);
+    }
+    //close(pipe);
 }
 
 void receive(Node *node) {
+
     char buf[255];
     char * fitoPath = getPipeFromId(node->id);
-    int pipe = open(fitoPath,O_RDONLY);
-    read(pipe,buf,sizeof(buf));
-    close(pipe);
 
-    printf("read : %s \n",buf);
+    int pipe = open(fitoPath,O_RDONLY | O_NONBLOCK);
+    if(pipe!=0) {
+        printf("isOpen for %s \n", fitoPath);
+        read(pipe, buf, 255);
+        close(pipe);
+
+
+        printf("read : %s \n", buf);
+    }
 }
 

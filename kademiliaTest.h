@@ -17,6 +17,8 @@
 
 #include "utilitaire.h"
 
+#include <pthread.h>
+
 #define IDLENGTH_INT 5
 #define DIRECTORYTEST "nodespace"
 
@@ -43,5 +45,7 @@ char * getPipeFromId(int id[IDLENGTH_INT]);
 
 void send(Node * node , char str[80]);
 void receive(Node * node );
+
+
 
 #endif //GROUPE7_KADEMILIATEST_H

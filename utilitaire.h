@@ -12,4 +12,10 @@
 
 char* concat(char *s1, char *s2);
 
+int xordistance(int a , int b );
+
+
+int GreatOrEqueals(int * original,int * compare,int length);
+int * xordistanceTableau(int * srcA,int * srcB,int length);
+
 #endif //GROUPE7_UTILITAIRE_H

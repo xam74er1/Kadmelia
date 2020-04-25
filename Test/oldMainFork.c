@@ -21,23 +21,14 @@ int main() {
     Node node1,node2;
     int tabIndex = 0;
     ini(&node1);
-
+    node1.tabIndex = tabIndex;
 
     createFifo(&node1);
 
     tabIndex++;
 
     ini(&node2);
-
-    Node voisinA,voisinB;
-    ini(&voisinA);
-    ini(&voisinB);
-
-    addVoisin(&node2,&voisinA);
-    addVoisin(&node2,&voisinB);
-
-    printf("Voisin A %s , Vosin B %s \n",getPipeFromId(voisinA.id),getPipeFromId(voisinB.id));
-
+    node2.tabIndex = tabIndex;
     createFifo(&node2);
     tabIndex++;
 
@@ -49,14 +40,17 @@ int main() {
     receive(&node1);
 */
 
+    printf("fork\n");
 
-    pthread_t t1,t2;
-    pthread_create(&t2,NULL,testReceive,&node2);
-    pthread_create(&t1,NULL,testReceive,&node1);
-    printf("Apres thread \n");
-    //testSend(&node2,getPipeFromId(&node2.id),"helloZ");
-    askVoisin(&node1,getPipeFromId(&node2.id));
-    pthread_join(t2,NULL);
+    int x = 0;
+    fork();
+    int tmp  =++x;
+
+    printf("tmp %d\n",tmp);
+    send(tab[tmp%2],getPipeFromId(tab[tmp%2]->id));
+    receive(tab[tmp%2]);
+
+
 
 
     return 0;

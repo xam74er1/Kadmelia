@@ -74,11 +74,18 @@ void createFifo(Node *fromNode) {
     char * fifoName=getPipeFromId(fromNode->id);
     printf("createFifo : %s \n",fifoName);
     //On cre la pipe
-    if(mkfifo(fifoName, 0644)!=0){
-        printf("impossible de cree la fifo");
-    }else{
-        printf("fifo cree\n");
+    if( access( fifoName, F_OK ) != -1 ) {
+        // file exists
+        printf("Fifo exite deja ");
+    } else {
+        // file doesn't exist
+        if(mkfifo(fifoName, 0644)!=0){
+            printf("impossible de cree la fifo");
+        }else{
+            printf("fifo cree\n");
+        }
     }
+
 
 }
 
@@ -118,8 +125,42 @@ char *getPipeFromId(int *id) {
 }
 
 //Worik in Progresse
-int findClosedNeibourg(){
+int findClosedNeibourg(Node * node){
+printf("Debut de la rechesse de voisin \n");
+    int nbVoisin = 1;
+    Node ** tabVoisin = malloc(sizeof(Node *)*255);
+    tabVoisin[0] = node->voisin[0];
 
+    int  delta = 1;
+
+    do{
+
+        node->idRessu = 0; //On vas attendre que un therad assyncrone ecrive ici l'id de la node recus , a ce moment le ptr sera diffrent de 0
+        askVoisin(node,getPipeFromId(tabVoisin[nbVoisin-1]->id));
+
+        //Tanque l'on a pas recus une reponce on attend
+        while(node->idRessu==0){
+            sleep(0.1);
+        }
+
+        printf("Le voisin le plus proche est : %s \n",getPipeFromId(node->idRessu));
+
+        int * nvx = xordistanceTableau(node->id,node->idRessu,IDLENGTH_INT);
+        int * old = xordistanceTableau(node->id,tabVoisin[nbVoisin-1]->id,IDLENGTH_INT);
+
+        delta = GreatOrEqueals(nvx,old,IDLENGTH_INT);
+
+        nbVoisin++;
+        Node * tmp = malloc(sizeof(Node));
+        ini(tmp);
+        setNodeId(tmp,node->idRessu);
+        tabVoisin[nbVoisin-1] = tmp;
+
+
+
+    }while(delta>0);
+
+    printf("Le voisin final est %s \n",getPipeFromId(tabVoisin[nbVoisin-1]->id));
 }
 
 
@@ -230,6 +271,7 @@ void *sendId(Node *node,char *dest) {
  * INput : la ode qui demende , dest: lendrois ou la on vas demende (la pipe)
  */
 void *askVoisin(Node *node,char *dest) {
+    printf("Ask voisin \n");
     umask(0);
 
     //  char *fitoPath = getPipeFromId(node->id);
@@ -262,23 +304,22 @@ void *askVoisin(Node *node,char *dest) {
  * Input : Node : la node qui recois les voin , pipe : id de la pipe ou il faut lire les voisn recus
  */
 void reciveVoisin(Node * node , int pipe){
-    int length;
-    read(pipe,&length,sizeof(int));
-    printf("recus %d \n",length);
 
-    u_int32_t tab[IDLENGTH_INT];
-    for(int i =0;i<length;i++){
+
+    u_int32_t *tab = malloc(sizeof(u_int32_t)*IDLENGTH_INT);
+
         read(pipe,tab,sizeof(u_int32_t)*IDLENGTH_INT);
+        node->idRessu = tab; //Lorsque lon revois un id on vas le metre dans la node pour le passez a un autre processuce
         printf("Voisin recssu %s \n",getPipeFromId(tab));
-    }
+
 
 }
 /*
- * Elle permet d'neovye les voinsi a a une destionation
+ * Evois le voin le plus proche au destinataire
  */
-void sendVoisin(Node * node,char * dest){
+void sendVoisin(Node * node,int * idDest){
     umask(0);
-
+    char * dest = getPipeFromId(idDest);
     //  char *fitoPath = getPipeFromId(node->id);
     char *fitoPath = dest;
     printf("write into %s  \n ", fitoPath);
@@ -291,15 +332,12 @@ void sendVoisin(Node * node,char * dest){
         sleep(1);
     } else {
         char type=REP_VOISIN;//on dit que lon envois des voisn
-        int length= node->nbVoisin;//le nbr de voisin
 
-
-        printf("Envois de %d voisin \n",length);
         write(pipe, &type  ,1);//on eris le typ de requette
-        write(pipe,&node->nbVoisin,sizeof(int));//on dit cb de voisin on envois
-        for(int i =0;i<length;i++){
-            write(pipe,node->voisin[i]->id,sizeof(u_int32_t)*IDLENGTH_INT);//on ecris chaque voin
-        }
+        Node * proche=   nodeLaPlusProche(node,idDest);
+
+        write(pipe,proche->id,sizeof(u_int32_t)*IDLENGTH_INT);//on ecris chaque voin
+
 
         printf("endWrite %d \n",pipe);
         //close(pipe);
@@ -307,6 +345,37 @@ void sendVoisin(Node * node,char * dest){
     }
 
 
+}
+/*Input : la node en question , valleur de comparaison
+ * Renvois la node la plus proche de la valleur
+ * Cela revien a fair un rechsse de min
+ */
+
+
+Node *nodeLaPlusProche(Node *node, int *valleur) {
+
+    int length = node->nbVoisin;
+
+    if(length>0) {
+        int *min = xordistanceTableau(node->voisin[0], valleur, IDLENGTH_INT);
+        Node *nodeMin = node->voisin[0];
+
+        for (int i = 1; i < length; i++) {
+            int *delta = xordistanceTableau(node->voisin[i], valleur, IDLENGTH_INT);
+            //SI la node actelle est plus pete que la node min , elle devien le nvx min
+            if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
+                free(min);
+                min = delta;
+                nodeMin = node->voisin[i];
+            }
+            free(delta);
+        }
+    //    free(min);
+
+        return nodeMin;
+    }else{
+        return node;
+    }
 }
 
 
@@ -384,7 +453,7 @@ void *testReceive(Node * node){
                 //on list qui nous a fait la demende
                 read(pipe, id, sizeof(node->id[0] )* IDLENGTH_INT);
                 //et on lui repond
-                sendVoisin(node,getPipeFromId(id));
+                sendVoisin(node,id);
 
                 //Si il est de type REP voisin cest que lon revois la reponce au voisin
             }else if(type==REP_VOISIN){

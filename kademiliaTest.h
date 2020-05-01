@@ -49,6 +49,7 @@ typedef struct Node{
     u_int32_t id[IDLENGTH_INT];//id de la node
     struct Node * voisin[NBVOISIN_MAX]; //list de mes voisin
     int nbVoisin; //nombre de voisin que jai actuellment
+int * idRessu ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
 
     int tabIndex;
 }Node;
@@ -93,12 +94,15 @@ void send(Node * node , char str[80]);
 //Elle est nottament uttilise pour les theard
 //Cest les oreille de notre node elle est cappable de repondre
 void receive(Node * node );
-
+/*
+ * Trouve le voisin le plus proche (algo pour le find node )
+ */
+int findClosedNeibourg(Node * node);
 //Renvois la liste de tout les voidsin de la node
 /*Input : Node qui possede les voisin , dest : chemin de la pipe
  *
  */
-void sendVoisin(Node * node,char * dest);
+void sendVoisin(Node * node,int * idDest);
 //Metode apple lorsque un voisn est recus
 void reciveVoisin(Node * node , int pipe);
 //Envois une demende pour savoir tout les voisin .
@@ -116,6 +120,10 @@ void *askVoisin(Node *node,char *dest);
          * Aissai pour envoye une caine de caratere a une node
          */
 void * testSend(Node *node,char *dest,char *str);
+/*
+ * Renvois la node la plus proche de la valleur au sesn xditance
+ */
+Node * nodeLaPlusProche(Node * node,int * valleur);
 /*
  * Meme chose que recinve .
  * Cest ici que je test les differente fonction de recust de message

@@ -3,6 +3,6 @@ project(groupe7)
 
 set(CMAKE_C_STANDARD 11 )
 
-add_executable(test Main.c kademiliaTest.c kademiliaTest.h utilitaire.c utilitaire.h )
-#add_executable(test Test/testThread.c)
+#add_executable(test Main.c kademiliaTest.c kademiliaTest.h utilitaire.c utilitaire.h )
+add_executable(test Test/testXor.c)
 target_link_libraries(test pthread)

@@ -52,10 +52,11 @@ int GreatOrEqueals(int *original, int *compare, int length) {
     for (int i = 0; i <length ; ++i) {
         int delta = original[i] - compare[i];
         if(delta!=0){
+        //    pritf("delta %d ",delta);
             return delta ;
         }
     }
-
+ //   pritf("delta %d ",delta);
     return 0;
 }
 

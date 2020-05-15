@@ -286,7 +286,7 @@ void *askVoisin(Node *node,char *dest) {
         sleep(1);
     } else {
         char id=ASK_VOISIN;
-        u_int32_t val = node->id[0];
+        uint32_t val = node->id[0];
         write(pipe, &id  ,1);
         write(pipe,&node->id,sizeof(node->id[0])*IDLENGTH_INT);
         //  write(pipe,&val,sizeof(val));
@@ -306,9 +306,9 @@ void *askVoisin(Node *node,char *dest) {
 void reciveVoisin(Node * node , int pipe){
 
 
-    u_int32_t *tab = malloc(sizeof(u_int32_t)*IDLENGTH_INT);
+    uint32_t *tab = malloc(sizeof(uint32_t)*IDLENGTH_INT);
 
-        read(pipe,tab,sizeof(u_int32_t)*IDLENGTH_INT);
+        read(pipe,tab,sizeof(uint32_t)*IDLENGTH_INT);
         node->idRessu = tab; //Lorsque lon revois un id on vas le metre dans la node pour le passez a un autre processuce
         printf("Voisin recssu %s \n",getPipeFromId(tab));
 
@@ -336,7 +336,7 @@ void sendVoisin(Node * node,int * idDest){
         write(pipe, &type  ,1);//on eris le typ de requette
         Node * proche=   nodeLaPlusProche(node,idDest);
 
-        write(pipe,proche->id,sizeof(u_int32_t)*IDLENGTH_INT);//on ecris chaque voin
+        write(pipe,proche->id,sizeof(uint32_t)*IDLENGTH_INT);//on ecris chaque voin
 
 
         printf("endWrite %d \n",pipe);
@@ -419,7 +419,7 @@ void *testReceive(Node * node){
 
     char* buf[255];
     char type ;
-    u_int32_t id[IDLENGTH_INT];
+    uint32_t id[IDLENGTH_INT];
 
     char * fitoPath = getPipeFromId(node->id);//chemin sur la quelle je vais ecoute
     printf("avant read \n");
@@ -441,7 +441,7 @@ void *testReceive(Node * node){
 
             //Si le type de message est egalle a ASK id cest que lon nous dmende un id
             if(type==ASK_ID) {
-                u_int32_t val = -1;
+                uint32_t val = -1;
                 read(pipe, id, sizeof(node->id[0] )* IDLENGTH_INT);
 
                 printf(" id : %s \n",getPipeFromId(id));

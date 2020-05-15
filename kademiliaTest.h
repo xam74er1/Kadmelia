@@ -18,6 +18,7 @@
 #include "utilitaire.h"
 
 #include <pthread.h>
+#include <stdint.h>
 
 #define IDLENGTH_INT 5 //Nombre de int qui compose un id (ici 5*32 = 160 bit)
 #define NBVOISIN_MAX 3 //Nomre de voisin maximome corepond au k-bukkets
@@ -46,7 +47,7 @@
 typedef struct Node{
     long ipAddres;//Adrrse id
     int port;//Port
-    u_int32_t id[IDLENGTH_INT];//id de la node
+    uint32_t id[IDLENGTH_INT];//id de la node
     struct Node * voisin[NBVOISIN_MAX]; //list de mes voisin
     int nbVoisin; //nombre de voisin que jai actuellment
 int * idRessu ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg

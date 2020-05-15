@@ -23,7 +23,7 @@ void printNode(Node * test){
 }
 
 
-int *xordistanceTableau(int *srcA, int *srcB, int length) {
+int *xordistanceTableau(int srcA[], int srcB[], int length) {
 
 
     int * xor = malloc(sizeof(srcA[0])*length);
@@ -61,4 +61,9 @@ int GreatOrEqueals(int *original, int *compare, int length) {
 }
 
 
+int GreatOrEquealsXor(int *original, int *a,int* b, int length) {
 
+    int * deltaA = xordistanceTableau(original,a,length);
+    int * deltaB = xordistanceTableau(original,b,length);
+    return GreatOrEqueals(deltaA,deltaB,length);
+}

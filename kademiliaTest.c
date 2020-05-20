@@ -124,19 +124,23 @@ char *getPipeFromId(int *id) {
     return retour;
 }
 
+
 //Worik in Progresse
-int findClosedNeibourg(Node * node){
-printf("Debut de la rechesse de voisin \n");
+int find_node(Node * node,int * id){
+
+printf("Debut de la rechesse de voisin pour id : %s \n",getPipeFromId(id));
     int nbVoisin = 1;
     Node ** tabVoisin = malloc(sizeof(Node *)*255);
-    tabVoisin[0] = node->voisin[0];
+    tabVoisin[0] = nodeLaPlusProche(node,id);
+    printf("Node la plus proche : %s \n",getPipeFromId(tabVoisin[0]->id));
+
 
     int  delta = 1;
 
     do{
 
         node->idRessu = 0; //On vas attendre que un therad assyncrone ecrive ici l'id de la node recus , a ce moment le ptr sera diffrent de 0
-        askVoisin(node,getPipeFromId(tabVoisin[nbVoisin-1]->id));
+        send_find_node(node,getPipeFromId(tabVoisin[nbVoisin-1]->id),id);
 
         //Tanque l'on a pas recus une reponce on attend
         while(node->idRessu==0){
@@ -145,16 +149,24 @@ printf("Debut de la rechesse de voisin \n");
 
         printf("Le voisin le plus proche est : %s \n",getPipeFromId(node->idRessu));
 
-        int * nvx = xordistanceTableau(node->id,node->idRessu,IDLENGTH_INT);
-        int * old = xordistanceTableau(node->id,tabVoisin[nbVoisin-1]->id,IDLENGTH_INT);
+        int * nvx = xordistanceTableau(id,node->idRessu,IDLENGTH_INT);
+        int * old = xordistanceTableau(id,tabVoisin[nbVoisin-1]->id,IDLENGTH_INT);
 
-        delta = GreatOrEqueals(nvx,old,IDLENGTH_INT);
+        printf("xorx nvx : %s \n",getPipeFromId(nvx));
+        printf("xorx old : %s \n",getPipeFromId(old));
 
-        nbVoisin++;
-        Node * tmp = malloc(sizeof(Node));
-        ini(tmp);
-        setNodeId(tmp,node->idRessu);
-        tabVoisin[nbVoisin-1] = tmp;
+        delta = GreatOrEqueals(old,nvx,IDLENGTH_INT);
+        printf("delta : %d \n",delta);
+        printf(" recus : %s , actuelle : %s \n ",getPipeFromId(node->idRessu),getPipeFromId(tabVoisin[nbVoisin-1]->id));
+        printf("delta2 : %d \n",GreatOrEqueals(node->idRessu, tabVoisin[nbVoisin - 1]->id,IDLENGTH_INT));
+
+if(delta>0) {
+    nbVoisin++;
+    Node *tmp = malloc(sizeof(Node));
+    ini(tmp);
+    setNodeId(tmp, node->idRessu);
+    tabVoisin[nbVoisin - 1] = tmp;
+}
 
 
 
@@ -265,6 +277,36 @@ void *sendId(Node *node,char *dest) {
 
 
 }
+/*
+ * Envois une demende pour savoir quelle est la node la plus proche
+ * @Input node qui fait la demende , adresse de la destination , valleur a demende
+ */
+void send_find_node(Node *node,char *dest,int * value){
+    printf("Ask voisin \n");
+    umask(0);
+
+    //  char *fitoPath = getPipeFromId(node->id);
+    char *fitoPath = dest;
+    printf("write into %s  \n ", fitoPath);
+
+    int pipe = -1;
+
+    if ((pipe = open(fitoPath, O_WRONLY )) == -1) {
+
+        printf("impossible de decrire \n");
+        sleep(1);
+    } else {
+        char id=ASK_SEND_NODE;
+
+        write(pipe, &id  ,1);
+        write(pipe,&node->id,sizeof(node->id[0])*IDLENGTH_INT);
+        write(pipe,value,sizeof(int)*IDLENGTH_INT);
+        //  write(pipe,&val,sizeof(val));
+        printf("endWrite %d \n",pipe);
+        //close(pipe);
+        sleep(0.1);
+    }
+}
 
 /*
  * Set a demende les voidin d'une node
@@ -357,12 +399,13 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
     int length = node->nbVoisin;
 
     if(length>0) {
-        int *min = xordistanceTableau(node->voisin[0], valleur, IDLENGTH_INT);
+        int *min = xordistanceTableau(node->voisin[0]->id, valleur, IDLENGTH_INT);
         Node *nodeMin = node->voisin[0];
 
         for (int i = 1; i < length; i++) {
-            int *delta = xordistanceTableau(node->voisin[i], valleur, IDLENGTH_INT);
+            int *delta = xordistanceTableau(node->voisin[i]->id, valleur, IDLENGTH_INT);
             //SI la node actelle est plus pete que la node min , elle devien le nvx min
+            printf("min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
             if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
                 free(min);
                 min = delta;
@@ -408,6 +451,44 @@ void *testSend(Node *node, char *dest, char *str) {
 
 }
 /*
+ * Action lors que lon demende de recevoir une node
+ *
+ */
+void receive_send_node(Node * node,int pipe) {
+    umask(0);
+int id_envoyeur[IDLENGTH_INT];
+int id_close[IDLENGTH_INT];
+    read(pipe, id_envoyeur, sizeof(node->id[0] )* IDLENGTH_INT);
+    read(pipe, id_close, sizeof(node->id[0] )* IDLENGTH_INT);
+
+
+    char * dest = getPipeFromId(id_envoyeur);
+    //  char *fitoPath = getPipeFromId(node->id);
+    char *fitoPath = dest;
+    printf("write into %s  \n ", fitoPath);
+
+    int pipeB = -1;
+
+    if ((pipe = open(fitoPath, O_WRONLY )) == -1) {
+
+        printf("impossible de decrire \n");
+        sleep(1);
+    } else {
+        char type=REP_SEND_NODE;//on dit que lon envois des voisn
+
+        write(pipe, &type  ,1);//on eris le typ de requette
+        Node * proche=   nodeLaPlusProche(node,id_close);
+
+        write(pipe,proche->id,sizeof(uint32_t)*IDLENGTH_INT);//on ecris chaque voin
+
+
+        printf("endWrite %d \n",pipe);
+        //close(pipe);
+        sleep(0.1);//On atten un peux
+    }
+
+}
+/*
  * /!\ Cette foncton est apple dans un theard dedier
  *
  * Le principe de cette fonction est decoute les demende de ses voisin , elle permet de simulle une demende envoye par le reseau .
@@ -415,14 +496,14 @@ void *testSend(Node *node, char *dest, char *str) {
  * Cette fonction ecoute a trave une pipe , lorsque quelle recsoin une demende elle revois la bonne reponce a cette node
  */
 void *testReceive(Node * node){
-    printf("testicive\n");
+
 
     char* buf[255];
     char type ;
     uint32_t id[IDLENGTH_INT];
 
     char * fitoPath = getPipeFromId(node->id);//chemin sur la quelle je vais ecoute
-    printf("avant read \n");
+
     sleep(1);
     int pipe = open(fitoPath,O_RDONLY ); //ouerture de la pipe
     printf("pipe : %d \n ",pipe);
@@ -456,12 +537,16 @@ void *testReceive(Node * node){
                 sendVoisin(node,id);
 
                 //Si il est de type REP voisin cest que lon revois la reponce au voisin
-            }else if(type==REP_VOISIN){
+            }else if(type==REP_VOISIN||type==REP_SEND_NODE){
                 //On traite ici la reception de voisin
                 reciveVoisin(node,pipe);
+            }else if(type==ASK_SEND_NODE) {
+                receive_send_node(node,pipe);
+
             }else{
-                printf("Id inconus \n");
-            }
+                    printf("Id inconus \n");
+                }
+
 
 
             i++;

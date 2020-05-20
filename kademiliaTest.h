@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "utilitaire.h"
+#include "utilitaires/utilitaire.h"
 
 #include <pthread.h>
 #include <stdint.h>
@@ -35,6 +35,8 @@
 #define  ASK_ID_REP 1 // " 1 si on recois un 1 cest la reponce a id
 #define ASK_VOISIN 2 // demende a la node d'envoye la liste de ses voisin
 #define REP_VOISIN 3 // reponce a une demende de voisin
+#define ASK_SEND_NODE 4 // demende la node la plus proche
+#define REP_SEND_NODE 5 // renvois la node la plus proche
 
 //Pseudo objet
 /*
@@ -98,7 +100,7 @@ void receive(Node * node );
 /*
  * Trouve le voisin le plus proche (algo pour le find node )
  */
-int findClosedNeibourg(Node * node);
+int find_node(Node * node,int *id);
 //Renvois la liste de tout les voidsin de la node
 /*Input : Node qui possede les voisin , dest : chemin de la pipe
  *
@@ -131,5 +133,17 @@ Node * nodeLaPlusProche(Node * node,int * valleur);
  *
  */
 void *testReceive(Node * node);
+
+/*
+ * Envois une demende pour savoir quelle est la node la plus proche
+ * @Input node qui fait la demende , adresse de la destination , valleur a demende
+ */
+void send_find_node(Node *node,char *dest,int * value);
+
+/*
+ * Action lors que lon demende de recevoir une node
+ *
+ */
+void receive_send_node(Node * node,int pipe);
 
 #endif //GROUPE7_KADEMILIATEST_H

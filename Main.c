@@ -18,6 +18,7 @@ void peupleNode(Node * tab[],int nb){
         tab[i] = n;
     }
     //On set les voisin
+    //On vas laisse sa mais on vas change les vo
     for(int i =0;i<nb;i++){
         int tmp = (i+1)%nb;
         int* valleur =tab[i]->id;
@@ -44,6 +45,41 @@ void peupleNode(Node * tab[],int nb){
     }
 
 }
+
+void peupleNodeMain(Node * tab[]){
+    for (int i = 0; i < 4; ++i) {
+        Node * n = malloc(sizeof(Node)) ;
+        ini(n);
+        tab[i] = n;
+    }
+//Voisin de 0 : 7 et 3
+    setNodeIdSimple(tab[0],0);
+    addVoisin(tab[0],tab[1]);
+    addVoisin(tab[0],tab[3]);
+
+    //Voisin de 3 : 0 et 7
+    setNodeIdSimple(tab[1],3);
+    addVoisin(tab[1],tab[0]);
+    addVoisin(tab[1],tab[3]);
+
+    //Voisin de 5 : 7 et 0
+    setNodeIdSimple(tab[2],5);
+    addVoisin(tab[2],tab[3]);
+    addVoisin(tab[2],tab[0]);
+
+    //Voisin de 7 : 3 et 5
+    setNodeIdSimple(tab[3],7);
+    addVoisin(tab[3],tab[1]);
+    addVoisin(tab[3],tab[2]);
+
+    for (int i = 0; i < 4; ++i) {
+        createFifo(tab[i]);
+    }
+
+
+
+}
+
 /*
  * Cette fonction me permet de fair mes test , elle est pas uen fonction propre
  *
@@ -60,22 +96,23 @@ int main() {
 
     ////////////////// NOde 1 ////////////////
     ini(&node1);//initilisation de la node 1
-    setNodeIdSimple(&node1,10);
+    setNodeIdSimple(&node1,4);
     createFifo(&node1);//Creation de la pipe por la node 1
 
     tabIndex++;
-    int nb = 9;
+    int nb = 4;
     Node ** tab = malloc(sizeof(Node *)*nb);
 
-    peupleNode(tab,nb);
+    peupleNodeMain(tab);
 
 
    // peupleNode(tab,nb);
     for(int i =0;i<nb;i++){
         printf("node : %s : voisin  %s \n",getPipeFromId(tab[i]->id),getPipeFromId(tab[i]->voisin[0]->id));
     }
-
-    addVoisin(&node1,tab[0]);
+    //Noe princiepale 4 : 5 et 3
+    addVoisin(&node1,tab[2]);
+    addVoisin(&node1,tab[1]);
 
 /*
     send(&node1,"hello");
@@ -103,8 +140,14 @@ int main() {
     //testSend(&node2,getPipeFromId(&node2.id),"helloZ");
     //la pipe 1 demende a la pipe 2 de lui donne ses voisn
     // askVoisin(&node1,getPipeFromId(&node2.id));
-
-    findClosedNeibourg(&node1);
+    printf("\n\n\n\n");
+    find_node(&node1,node1.id);
+    printf("\n\n\n\n");
+    int * testTab[5];
+    for(int i = 0;i<5;i++){
+        testTab[i] = 0;
+    }
+    find_node(&node1,testTab);
 
     //On attend que les thrad aye fini avant de termine le programe
 

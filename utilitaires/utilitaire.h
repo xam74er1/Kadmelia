@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "kademiliaTest.h"
+#include "../kademiliaTest.h"
 
 char* concat(char *s1, char *s2);
 

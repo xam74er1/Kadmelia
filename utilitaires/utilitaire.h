@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
+#include "../package/node.h"
 
 char* concat(char *s1, char *s2);
 

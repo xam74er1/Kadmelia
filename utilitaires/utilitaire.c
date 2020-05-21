@@ -15,11 +15,12 @@ char *concat(char *s1, char *s2) {
 
 void printNode(Node * test){
 
-    printf(" ip : %d \t port %d \t id :",test->ipAddres,test->port);
+    printf(" ip : %s \t port %d \t id :",inet_ntoa(test->addr_ip.sin_addr),ntohs(test->addr_ip.sin_port));
 
     for (int i = 0; i < IDLENGTH_INT; ++i) {
         printf("%x ",test->id[i]);
     }
+    printf("\n");
 }
 
 

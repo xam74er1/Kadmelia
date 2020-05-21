@@ -59,4 +59,6 @@ void setTabIndex(Node * node, int index);
 int iniID(Node * node);
 
 void iniAddr(Node * node);
+
+char *getPipeFromId(int *id);
 #endif //GROUPE7_NODE_H

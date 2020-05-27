@@ -4,6 +4,8 @@
 #include "../package/node.h"
 #include "../package/send_udp.h"
 #include "../utilitaires/utilitaire.h"
+#include "../package/ping.h"
+
 int main() {
     srand(time(NULL));   // Initialization, du random
     Node nodeA,nodeB,nodeC;
@@ -17,16 +19,20 @@ int main() {
     ini(&nodeC);
     setNodeIdSimple(&nodeC,3);
 
+    addVoisin(&nodeA,&nodeB);
+
     printNode(&nodeA);
     printNode(&nodeB);
 
     pthread_t t1,t2;
 
     pthread_create(&t2,NULL,receive_udp,&nodeB);
+    pthread_create(&t1,NULL,receive_udp,&nodeA);
     sleep(2);
     printf("Apres thead \n");
-    send_udp(&nodeA,&nodeB);
+    ping(&nodeA,&nodeB);
     sleep(2);
-    send_udp(&nodeC,&nodeB);
+
     pthread_join(t2,NULL);
+    pthread_join(t1,NULL);
 }

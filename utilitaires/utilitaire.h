@@ -18,4 +18,7 @@ int xordistance(int a , int b );
 int GreatOrEqueals(int * original,int * compare,int length);
 int * xordistanceTableau(int * srcA,int * srcB,int length);
 
+//Void est une node
+void printNode(struct Node * test);
+
 #endif //GROUPE7_UTILITAIRE_H

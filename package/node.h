@@ -25,10 +25,21 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-
+//COnstante uttile
 #define IDLENGTH_INT 5 //Nombre de int qui compose un id (ici 5*32 = 160 bit)
+#define IDLENGTH_SIZE IDLENGTH_INT*sizeof(uint32_t)
 #define NBVOISIN_MAX 3 //Nomre de voisin maximome corepond au k-bukkets
 #define DIRECTORYTEST "nodespace" //Nom du dossie qui contien les test
+
+
+//Mesage uttilise
+
+#define MSG_UNKNOW -1
+#define MSG_PING 2
+#define MSG_PONG 3
+
+#define MSG_FIND_NODE 4
+#define MSG_FIND_NODE_REP 5
 
 typedef struct Node{
     int sockfd; //Socket de communcation pour recevoire
@@ -36,7 +47,7 @@ typedef struct Node{
     uint32_t id[IDLENGTH_INT];//id de la node
     struct Node * voisin[NBVOISIN_MAX]; //list de mes voisin
     int nbVoisin; //nombre de voisin que jai actuellment
-    int * idRessu ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
+    int buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
 
     int tabIndex;
 }Node;

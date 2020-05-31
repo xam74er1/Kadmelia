@@ -23,7 +23,7 @@ FILE(GLOB PackageC package/*.c)
 FILE(GLOB PackageH package/*.h)
 
 #add_executable(test Test/testUdp.c package/node.c package/node.h utilitaires/utilitaire.c utilitaires/utilitaire.h package/send_udp.c package/send_udp.h)
-add_executable(test Test/testFindNode.c ${PackageC} ${UtilitaireC} ${PackageH} ${UtilitaireH})
+add_executable(test Test/testFindNode.c ${PackageC} ${UtilitaireC} ${PackageH} ${UtilitaireH} package/bukket.h)
 find_package(Threads REQUIRED)
 target_link_libraries(test pthread Threads::Threads dl)
 

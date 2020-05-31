@@ -89,3 +89,8 @@ void iniAddr(Node * node){
      node->addr_ip.sin_port = htons(portNum); //On le set a 0 pour lui dire de prendre un port par defaut pour la communication
      portNum++;
 }
+
+void * addNodeToBukket(Node * from,Node * toAdd){
+    Bucket * bucket = find_Bucket(from,toAdd);
+    add_node_to_bukket(toAdd,bucket);
+}

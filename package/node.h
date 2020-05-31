@@ -16,6 +16,7 @@
 #include <string.h>
 
 #include "../utilitaires/utilitaire.h"
+#include "bukket.h"
 
 #include <pthread.h>
 #include <stdint.h>
@@ -30,6 +31,7 @@
 #define IDLENGTH_SIZE IDLENGTH_INT*sizeof(uint32_t)
 #define NBVOISIN_MAX 3 //Nomre de voisin maximome corepond au k-bukkets
 #define DIRECTORYTEST "nodespace" //Nom du dossie qui contien les test
+#define NBBUCKET 160
 
 
 //Mesage uttilise
@@ -48,7 +50,7 @@ typedef struct Node{
     struct Node * voisin[NBVOISIN_MAX]; //list de mes voisin
     int nbVoisin; //nombre de voisin que jai actuellment
     struct Node * buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
-
+    struct Bucket * listBucket[NBBUCKET]
     int tabIndex;
 }Node;
 
@@ -67,9 +69,15 @@ void addVoisin(Node *original, Node *voisin);
 //set index a la node
 void setTabIndex(Node * node, int index);
 
+//Inilise les ID
 int iniID(Node * node);
 
+//Inilise les adrese ip
 void iniAddr(Node * node);
 
+//Mtode uttilse pour les string
 char *getPipeFromId(int *id);
+
+//ajoute une node dans le bon buckette
+void * addNodeToBukket(Node * from,Node * toAdd);
 #endif //GROUPE7_NODE_H

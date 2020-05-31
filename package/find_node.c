@@ -18,7 +18,7 @@ void find_node(struct Node *node, int *id) {
     int nbVoisin = 1;
     Node ** tabVoisin = malloc(sizeof(Node *)*255);
     tabVoisin[0] = nodeLaPlusProche(node,id);
-    printf("Node la plus proche : %s \n",getPipeFromId(tabVoisin[0]->id));
+    printf("Node la plus proche au debut : %s \n",getPipeFromId(tabVoisin[0]->id));
 
 
     int  delta = 1;
@@ -26,16 +26,17 @@ void find_node(struct Node *node, int *id) {
     do{
 
         node->buffer = 0; //On vas attendre que un therad assyncrone ecrive ici l'id de la node recus , a ce moment le ptr sera diffrent de 0
-        send_find_node(node,getPipeFromId(tabVoisin[nbVoisin-1]->id),id);
+        send_find_node(node,tabVoisin[nbVoisin-1],id);
 
         //Tanque l'on a pas recus une reponce on attend
         while(node->buffer == 0){
             sleep(0.1);
         }
         //On revois le pointeur vers la node recus
-        Node * recus = node->buffer;
+        Node * recus = (Node *) node->buffer;
 
-        printf("Le voisin le plus proche est : %s \n",getPipeFromId(recus->id));
+
+        printf("Le voisin le plus proche est :  \n");printNode(recus);
 
         int * nvx = xordistanceTableau(id, recus->id, IDLENGTH_INT);
         int * old = xordistanceTableau(id,tabVoisin[nbVoisin-1]->id,IDLENGTH_INT);
@@ -50,14 +51,12 @@ void find_node(struct Node *node, int *id) {
 
         if(delta>0) {
             nbVoisin++;
-            Node *tmp = malloc(sizeof(Node));
-            ini(tmp);
-            setNodeId(tmp, node->buffer);
-            tabVoisin[nbVoisin - 1] = tmp;
+
+            tabVoisin[nbVoisin - 1] = recus;
         }
 
 
-
+printf("\n");
     }while(delta>0);
 
     printf("Le voisin final est %s \n",getPipeFromId(tabVoisin[nbVoisin-1]->id));
@@ -136,5 +135,9 @@ void receive_closed_node(Node * from,Node * to,void * buffer){
     int decalage = sizeof(char)+IDLENGTH_SIZE;
     memcpy(&close->id,buffer+decalage,IDLENGTH_SIZE);
     memcpy(&close->addr_ip,buffer+decalage+IDLENGTH_SIZE,sizeof(struct sockaddr_in));
+    printf("Node recus transmise au bufer %d : ",close);
+    printNode(close);
+
 from->buffer = close;
+
 }

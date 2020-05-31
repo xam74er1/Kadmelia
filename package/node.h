@@ -47,7 +47,7 @@ typedef struct Node{
     uint32_t id[IDLENGTH_INT];//id de la node
     struct Node * voisin[NBVOISIN_MAX]; //list de mes voisin
     int nbVoisin; //nombre de voisin que jai actuellment
-    int buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
+    struct Node * buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
 
     int tabIndex;
 }Node;

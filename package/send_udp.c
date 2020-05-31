@@ -4,7 +4,9 @@
 #include "send_udp.h"
 #include "ping.h"
 #include "find_node.h"
-
+#include <pthread.h>
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static int count = 0;
 
 void send_udp(Node *from, Node *to, char type, void *data, long size) {
     printf("send udp\n");
@@ -36,7 +38,8 @@ void send_udp(Node *from, Node *to, char type, void *data, long size) {
     //on oublie pas de libre la zone emoire
     free(dest);
 
-    printf("send udp ok\n");
+    printf("send udp ok to \n");
+    printNode(to);
 }
 
 
@@ -51,15 +54,18 @@ _Noreturn void receive_udp(Node *from) {
     struct sockaddr_in fromAddr;
     int len = sizeof(fromAddr);
 
-
-
+    pthread_mutex_lock(&mutex);
+int tmp = bind(from->sockfd, (const struct sockaddr *) &from->addr_ip,
+               sizeof(from->addr_ip));
     // Bind the socket with the server address
-    if (bind(from->sockfd, (const struct sockaddr *) &from->addr_ip,
-             sizeof(from->addr_ip)) < 0) {
+    if ( tmp< 0) {
         perror("bind failed");
         exit(EXIT_FAILURE);
+    }else{
+        count++;
+        printf("bind ok %d \n",count);
     }
-
+    pthread_mutex_unlock(&mutex);
     printNode(from);
     while (1) {
         void *buffer = malloc(MAXDATA_UDP);
@@ -93,6 +99,7 @@ _Noreturn void receive_udp(Node *from) {
                     receive_find_node(from,&reponce,buffer);
                 break;
             case MSG_FIND_NODE_REP:
+                receive_closed_node(from,&reponce,buffer);
                 break;
             default:
                 printf("Message incunus");

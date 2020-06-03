@@ -5,18 +5,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <openssl/sha.h>
+//#include <openssl/sha.h>
+#include "../lib/openssl/sha.h"
 
 int main()
 {
-    int i;
-    unsigned char result[SHA_DIGEST_LENGTH];
-    const char *string = "Rosetta Code";
+    const unsigned char str[] = "Original String";
+    unsigned char hash[SHA_DIGEST_LENGTH];
 
-    SHA1(string, strlen(string), result);
+    SHA1(str, sizeof(str) -1, hash);
 
-    for(i = 0; i < SHA_DIGEST_LENGTH; i++)
-        printf("%02x%c", result[i], i < (SHA_DIGEST_LENGTH-1) ? ' ' : '\n');
+    fprintf(stderr, "Hashed successfully\n");
+    fprintf(stderr, str);
+    fprintf(stderr, hash);
 
-    return EXIT_SUCCESS;
+
+    return 0;
 }

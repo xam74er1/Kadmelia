@@ -26,12 +26,9 @@ int main(int argc, char* argv[]){
     }
 
     //creation table
-    char *sql = "DROP TABLE IF EXISTS users;"
-                "DROP TABLE IF EXISTS titre;"
-                "DROP TABLE IF EXISTS fichier;"
-                "CREATE TABLE users(id INT,ip TEXT, port INT);"
-                "CREATE TABLE titre(hash TEXT,string TEXT);"
-                "CREATE TABLE fichier(hash TEXT, chemin_fichier TEXT);";
+    char *sql = "CREATE TABLE IF NOT EXIST users(id INT,ip TEXT, port INT);"
+                "CREATE TABLE IF NOT EXIST titre(hash TEXT,string TEXT);"
+                "CREATE TABLE IF NOT EXIST fichier(hash TEXT, chemin_fichier TEXT);";
 
 
     sqlite3_exec(db, sql, 0,0 ,&err_msg);
@@ -81,7 +78,6 @@ int main(int argc, char* argv[]){
 
         return 1;
     }
-
 
     sqlite3_close(db);
 

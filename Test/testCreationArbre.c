@@ -1,4 +1,8 @@
 //
+// Created by root on 6/3/20.
+//
+
+//
 // Created by root on 5/31/20.
 //
 
@@ -66,29 +70,8 @@ void peupleNodeMain(Node * tab[]){
         Node * n = malloc(sizeof(Node)) ;
         ini(n);
         tab[i] = n;
+        setNodeIdSimple(n,i);
     }
-//Voisin de 0 : 7 et 3
-    setNodeIdSimple(tab[0],0);
-    addVoisin(tab[0],tab[1]);
-    addVoisin(tab[0],tab[3]);
-
-    //Voisin de 3 : 0 et 7
-    setNodeIdSimple(tab[1],3);
-    addVoisin(tab[1],tab[0]);
-    addVoisin(tab[1],tab[3]);
-
-    //Voisin de 5 : 7 et 0
-    setNodeIdSimple(tab[2],5);
-    addVoisin(tab[2],tab[3]);
-    addVoisin(tab[2],tab[0]);
-
-    //Voisin de 7 : 3 et 5
-    setNodeIdSimple(tab[3],7);
-    addVoisin(tab[3],tab[1]);
-    addVoisin(tab[3],tab[2]);
-
-
-
 
 
 }
@@ -102,7 +85,7 @@ int main() {
 
     srand(time(NULL));   // Initialization, du random
 
-    Node node1,node2;//declration de 2 node
+    Node node1,nodeStart;//declration de 2 node
 
 
     int tabIndex = 1;
@@ -111,6 +94,8 @@ int main() {
     ini(&node1);//initilisation de la node 1
     setNodeIdSimple(&node1,4);
 
+    ini(&nodeStart);
+    setNodeIdSimple(&nodeStart,5);
 
     tabIndex++;
     int nb = 4;
@@ -119,26 +104,13 @@ int main() {
     peupleNodeMain(tab);
 
 
-    //Noe princiepale vosin de 4 : 5 et 3
-    addVoisin(&node1,tab[2]);
-    addVoisin(&node1,tab[1]);
-
-    for(int i = 0;i<nb;i++){
-        printNode(tab[i]);
-        printBukket(tab[i]);
-        printf("\n");
-    }
-
-    printNode(&node1);
-    printBukket(&node1);
-
 /*
     send(&node1,"hello");
     receive(&node1);
 */
 
 //On vas uttilise des theared pour simule un reseau
-    pthread_t t1;
+    pthread_t t1,t2;
     pthread_t ** tabThread = malloc(sizeof(pthread_t )*nb);
     for (int i = 0; i < nb; ++i) {
         pthread_t tmp;
@@ -150,30 +122,27 @@ int main() {
     sleep(1);
 
     pthread_create(&t1,NULL,receive_udp,&node1);
+    pthread_create(&t2,NULL,receive_udp,&nodeStart);
 
     sleep(1);
 
     printf("\n Apres thread \n\n\n\n");
 
+for(int i =0;i<nb;i++){
+    printf("Node : ");
+    printNode(tab[i]);
 
-    //testSend(&node2,getPipeFromId(&node2.id),"helloZ");
-
-    printf("\n\n\n\n");
-    //Objectife trouve la node la plus proche de sois dans le reseau , a la fin le messag dois etre "Le voisin final est nodespace/5-0-0-0-0 "
+    addVoisin(tab[i],&nodeStart);
+    find_node(tab[i],tab[i]->id);
+    printf("\n\n");
+}
+addVoisin(&node1,&nodeStart);
     find_node(&node1,node1.id);
 
-    sleep(1);
-    printf("------\n\n\n\n");
-    int * testTab[5];
-    for(int i = 0;i<5;i++){
-        testTab[i] = 0;
-    }
 
-    //On seche la node 0 , a la fin le messag dois etre "Le voisin final est nodespace/0-0-0-0-0 "
-    find_node(&node1,testTab);
 
-    //On attend que les thrad aye fini avant de termine le programe
 
+    pthread_join(t2,NULL);
     pthread_join(t1,NULL);
     for (int j = 0; j < nb; ++j) {
         pthread_join(tabThread[j],NULL);

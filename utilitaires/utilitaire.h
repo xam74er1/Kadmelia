@@ -21,4 +21,6 @@ int * xordistanceTableau(int * srcA,int * srcB,int length);
 //Void est une node
 void printNode(struct Node * test);
 
+void printBukket(struct Node * node);
+
 #endif //GROUPE7_UTILITAIRE_H

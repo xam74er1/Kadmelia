@@ -29,7 +29,6 @@
 //COnstante uttile
 #define IDLENGTH_INT 5 //Nombre de int qui compose un id (ici 5*32 = 160 bit)
 #define IDLENGTH_SIZE IDLENGTH_INT*sizeof(uint32_t)
-#define NBVOISIN_MAX 3 //Nomre de voisin maximome corepond au k-bukkets
 #define DIRECTORYTEST "nodespace" //Nom du dossie qui contien les test
 #define NBBUCKET 160
 
@@ -47,10 +46,8 @@ typedef struct Node{
     int sockfd; //Socket de communcation pour recevoire
     struct sockaddr_in addr_ip; //tout les ip
     uint32_t id[IDLENGTH_INT];//id de la node
-    struct Node * voisin[NBVOISIN_MAX]; //list de mes voisin
-    int nbVoisin; //nombre de voisin que jai actuellment
     struct Node * buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
-    struct Bucket * listBucket[NBBUCKET]
+    struct Bucket * listBucket[NBBUCKET];
     int tabIndex;
 }Node;
 

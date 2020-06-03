@@ -4,6 +4,7 @@
 
 
 
+#include <stdbool.h>
 #include "find_node.h"
 #include "send_udp.h"
 
@@ -36,17 +37,15 @@ void find_node(struct Node *node, int *id) {
         Node * recus = (Node *) node->buffer;
 
 
-        printf("Le voisin le plus proche est :  \n");printNode(recus);
+        printf("Le voisin temporaire le plus proche est :  \n");printNode(recus);
 
         int * nvx = xordistanceTableau(id, recus->id, IDLENGTH_INT);
         int * old = xordistanceTableau(id,tabVoisin[nbVoisin-1]->id,IDLENGTH_INT);
 
-        printf("xorx nvx : %s \n",getPipeFromId(nvx));
-        printf("xorx old : %s \n",getPipeFromId(old));
+
 
         delta = GreatOrEqueals(old,nvx,IDLENGTH_INT);
-        printf("delta : %d \n",delta);
-        printf(" recus : %s , actuelle : %s \n ", getPipeFromId(recus->id), getPipeFromId(tabVoisin[nbVoisin - 1]->id));
+
 
 
         if(delta>0) {
@@ -69,35 +68,64 @@ printf("\n");
 
 
 Node *nodeLaPlusProche(Node *node, int *valleur) {
+    int *min;
+    Node * nodeMin = 0;
 
-    int length = node->nbVoisin;
+    int i = 0;
+//on chesse le premier buckette non vide
+    while(node->listBucket[i]->nbVoisin==0&&i<(NBBUCKET-1)) i++;
+//On est sur un paque qui nexite pas et qui ne contien pas de node
+//On est surment arrive a la fin
+//donc on arrete la
+    if(!node->listBucket[i]->bukket[0]){
 
-    if(length>0) {
-        int *min = xordistanceTableau(node->voisin[0]->id, valleur, IDLENGTH_INT);
-        Node *nodeMin = node->voisin[0];
+        return node;
+    }
 
-        for (int i = 1; i < length; i++) {
-            int *delta = xordistanceTableau(node->voisin[i]->id, valleur, IDLENGTH_INT);
-            //SI la node actelle est plus pete que la node min , elle devien le nvx min
-            printf("min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
-            if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
-                free(min);
-                min = delta;
-                nodeMin = node->voisin[i];
-            }
-            free(delta);
+        nodeMin = node->listBucket[i]->bukket[0];
+
+      min = xordistanceTableau(nodeMin->id, valleur, IDLENGTH_INT);
+
+
+
+    for(int j = 1;j<node->listBucket[i]->nbVoisin;j++){
+        int *delta = xordistanceTableau(node->listBucket[i]->bukket[j], valleur, IDLENGTH_INT);
+        //SI la node actelle est plus pete que la node min , elle devien le nvx min
+        printf("min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
+        if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
+            free(min);
+            min = delta;
+            nodeMin = node->listBucket[i]->bukket[j];
         }
-        //    free(min);
+        free(delta);
+    }
 
+    i++;
+
+    for(i;i<NBBUCKET;i++){
+        if(node->listBucket[i]->nbVoisin>0){
+            for(int j = 0;j<node->listBucket[i]->nbVoisin;j++){
+                int *delta = xordistanceTableau(node->listBucket[i]->bukket[j], valleur, IDLENGTH_INT);
+                //SI la node actelle est plus pete que la node min , elle devien le nvx min
+                printf("min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
+                if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
+                    free(min);
+                    min = delta;
+                    nodeMin = node->listBucket[i]->bukket[j];
+                }
+                free(delta);
+            }
+        }
+    }
+    if(nodeMin) {
         return nodeMin;
     }else{
         return node;
     }
+
 }
 
 void send_find_node(Node * from,Node * to,int * value){
-
-
     send_udp(from,to,MSG_FIND_NODE,value,IDLENGTH_SIZE);
 
 }
@@ -118,7 +146,7 @@ void receive_find_node(Node * from,Node * to,void * buffer){
     if (GreatOrEqueals(delta, xor, IDLENGTH_INT) > 0) {
     close = from;
     }
-
+printf("Node renvoyer %s\n",getPipeFromId(close->id));
     int size = IDLENGTH_SIZE+sizeof(struct sockaddr_in);
     void * data = malloc(size);
 //On copy id et addr ip
@@ -126,6 +154,9 @@ void receive_find_node(Node * from,Node * to,void * buffer){
     memcpy(data+IDLENGTH_SIZE,&close->addr_ip,sizeof(struct sockaddr_in));
 
     send_udp(from,to,MSG_FIND_NODE_REP,data,size);
+
+    //on ajoute le voisin a la fin
+    addVoisin(from,to);
 
 }
 
@@ -135,7 +166,7 @@ void receive_closed_node(Node * from,Node * to,void * buffer){
     int decalage = sizeof(char)+IDLENGTH_SIZE;
     memcpy(&close->id,buffer+decalage,IDLENGTH_SIZE);
     memcpy(&close->addr_ip,buffer+decalage+IDLENGTH_SIZE,sizeof(struct sockaddr_in));
-    printf("Node recus transmise au bufer %d : ",close);
+
     printNode(close);
 
 from->buffer = close;

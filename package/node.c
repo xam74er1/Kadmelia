@@ -40,7 +40,11 @@ char *getPipeFromId(int *id) {
 
 void ini(Node *node) {
 iniID(node);
-    node->nbVoisin=0;
+for(int i = 0 ;i<NBBUCKET;i++){
+    Bucket * b = malloc(sizeof(Bucket));
+    b->nbVoisin=0;
+node->listBucket[i] = b;
+}
     iniID(node);
     iniAddr(node);
 }
@@ -71,9 +75,7 @@ void setNodeIdSimple(Node *fromNode, int id){
 
 //Ajoute un voisin a une node
 void addVoisin(Node *original, Node *voisin){
-    int pos = original->nbVoisin;
-    original->voisin[pos] = voisin;
-    original->nbVoisin++;
+  addNodeToBukket(original,voisin);
 }
 
 void iniAddr(Node * node){
@@ -91,6 +93,10 @@ void iniAddr(Node * node){
 }
 
 void * addNodeToBukket(Node * from,Node * toAdd){
+printf("%s a un nvx voisin %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->id));
     Bucket * bucket = find_Bucket(from,toAdd);
+    if(!bucket){
+        fprintf(stderr, "Erreur : de bukket pour %s il ne peux pas insere : %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->id));
+    }
     add_node_to_bukket(toAdd,bucket);
 }

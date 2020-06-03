@@ -39,7 +39,7 @@ void send_udp(Node *from, Node *to, char type, void *data, long size) {
     free(dest);
 
     printf("send udp ok to \n");
-    printNode(to);
+    printNode((struct Node *) to);
 }
 
 
@@ -66,40 +66,52 @@ int tmp = bind(from->sockfd, (const struct sockaddr *) &from->addr_ip,
         printf("bind ok %d \n",count);
     }
     pthread_mutex_unlock(&mutex);
-    printNode(from);
+    printNode((struct Node *) from);
     while (1) {
         void *buffer = malloc(MAXDATA_UDP);
         int n = recvfrom(from->sockfd, buffer, MAXDATA_UDP,
                          MSG_WAITALL, (struct sockaddr *) &fromAddr,
                          &len);
 
-        printf("nb recus %d \n",n);
-        Node reponce;
+
+        Node test ;
+        printf("Test de merde : %d\n",&test);
+        Node * reponce = malloc(sizeof(Node));
         memcpy(&type,buffer,sizeof(char));
-        memcpy(&reponce.id,buffer+sizeof(char),IDLENGTH_INT*sizeof(uint32_t));
-        reponce.addr_ip =fromAddr;
+        memcpy(&reponce->id,buffer+sizeof(char),IDLENGTH_INT*sizeof(uint32_t));
+        reponce->addr_ip =fromAddr;
+
+
 
 //Juste de l'affichage pour le debug
-        printf("type recus %d \n", type);
-        printf("Node recus %s \n", getPipeFromId(&reponce.id));
+
+        printf("Node recus %s \n", getPipeFromId((int *) &reponce->id));
+
+        //On evite de mettre la node tout de suite pour le processuce de bootstrap
+        //Si non elle renvois son propre ID vus que le progame la conais deja (et cest pas tres uttille)
+        //Pour le find node le voisn est joute a la fin une vois que lon a tout envoye
+        if(type!=MSG_FIND_NODE){
+            addVoisin(from,reponce);
+        }
+
 
         char display[16] = {0};
         inet_ntop(AF_INET, &fromAddr.sin_addr.s_addr, display, sizeof display);
-        printf("message recus de  %s:%d \n",display,fromAddr.sin_port);
+
 
 
         switch (type) {
             case MSG_PING:
-                pong(from,&reponce);
+                pong(from,reponce);
                 break;
             case MSG_PONG:
                 printf("message pong \n");
                 break;
             case MSG_FIND_NODE:
-                    receive_find_node(from,&reponce,buffer);
+                    receive_find_node(from,reponce,buffer);
                 break;
             case MSG_FIND_NODE_REP:
-                receive_closed_node(from,&reponce,buffer);
+                receive_closed_node(from,reponce,buffer);
                 break;
             default:
                 printf("Message incunus");

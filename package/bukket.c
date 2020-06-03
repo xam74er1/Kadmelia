@@ -27,12 +27,13 @@ int tabPos = 0;
  * Si on ne troue pas on decle le mask de bit de 1 crand vers la droite (ex avant 1000 , apres 01000) , cela ce fait avec l'operation >>1
  *
  */
+    int max =sizeof(uint32_t)*8;
 for(int i = 0;i<IDLENGTH_INT&&!isPosioned;i++){
 
     int xor = from->id[i]^ toPlace->id[i];//On fait un xor des 2
-    int mask = 1<<sizeof(uint32_t);//on realise un masque pour selectione les bit 1 a 1, ici positone a 2^32 ou 100..000 (avec 32 bit)
-    for(int j = 0;j<sizeof(uint32_t)&&!isPosioned;j++){
-        if(xor&&mask){//Si le bit egale a 1 alors il y a une diffrence et on a trouve
+    int mask = 1<<(max-1);//on realise un masque pour selectione les bit 1 a 1, ici positone a 2^32 ou 100..000 (avec 32 bit)
+    for(int j = 0;j<max&&!isPosioned;j++){
+        if(xor&mask){//Si le bit egale a 1 alors il y a une diffrence et on a trouve
             isPosioned = true;
         }else{
             tabPos++;
@@ -40,6 +41,7 @@ for(int i = 0;i<IDLENGTH_INT&&!isPosioned;i++){
 mask = mask >>1;//on decla le mask de 1
     }
 }
+
 
 if(tabPos<NBBUCKET){
     return from->listBucket[tabPos];
@@ -51,20 +53,35 @@ return 0;
 //ajoute une node au bukket
 void * add_node_to_bukket(struct Node * node,Bucket * bucket){
 
-    Node *backup = bucket->bukket[K_BUCKET-1];
+if(bucket) {
 //On decale tout de 1
-    void * source = (void *) bucket->bukket;
-    void * destination = (void *) ( bucket->bukket+ 1 );
-    size_t size = K_BUCKET * sizeof( Node * );
-    memmove( destination, source, size );
+    void *source = (void *) bucket->bukket;
+    void *destination = (void *) (bucket->bukket + 1);
+    size_t size = K_BUCKET * sizeof(Node *);
 
+    //Pour corige en hot fixe meme si cest pas propre
+    int avant = bucket->nbVoisin;
+
+    //possible que dautre pbr suvien lus tard
+    memmove(destination, source, size);
+
+    bucket->nbVoisin=avant;
     //on ajoute lelment au debut
     bucket->bukket[0] = node;
 
+    if (bucket->nbVoisin < K_BUCKET) {
+        bucket->nbVoisin++;
+    }
+    printf("Ajout du voisin %s \n", getPipeFromId(node->id));
+/*
     //Pas sur de cette setion a voir si elle pose des pbr
     if(bucket->nbVoisin>K_BUCKET){
         free(backup);
     }
+*/
+}else{
+    fprintf(stderr, "Erreur : bukket null (vous ne pouvez pas vous insere vous meme pour %s) \n");
+}
 
 
 }

@@ -23,6 +23,13 @@ void printNode(Node * test){
     printf("\n");
 }
 
+void printBukket(Node * node){
+    for(int i =0;i<NBBUCKET;i++){
+        if(node->listBucket[i]->nbVoisin!=0){
+            printf(" %d , %s \n",i,getPipeFromId(node->listBucket[i]->bukket[0]->id));
+        }
+    }
+}
 
 int *xordistanceTableau(int srcA[], int srcB[], int length) {
 

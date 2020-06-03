@@ -5,10 +5,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../lib/sqlite3.h"
+#include <inttypes.h>
+
 
 int callback(void *, int, char **, char **);
+int createDatabase();
+int setNode(uint32_t, long, int);
 
 int main(int argc, char* argv[]){
+
+
+    createDatabase();
+
+
+
+    uint32_t id= 32;
+    long ip = 454545;
+    int port = 8000;
+
+    setNode(id,ip,port);
+
+
+    //getNode(id);
+
+
+    return 0;
+}
+
+
+//affichage de toutes les lignes des queries
+int callback(void *NotUsed, int argc, char **argv, char **azColName) {
+
+    NotUsed = 0;
+
+    for (int i = 0; i < argc; i++) {
+
+        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
+int createDatabase () {
+
     sqlite3 *db;
     char *err_msg = 0;
 
@@ -26,7 +67,7 @@ int main(int argc, char* argv[]){
     }
 
     //creation table
-    char *sql = "CREATE TABLE IF NOT EXIST users(id INT,ip TEXT, port INT);"
+    char *sql = "CREATE TABLE IF NOT EXIST users(id BLOB,ip INT, port INT);"
                 "CREATE TABLE IF NOT EXIST titre(hash TEXT,string TEXT);"
                 "CREATE TABLE IF NOT EXIST fichier(hash TEXT, chemin_fichier TEXT);";
 
@@ -46,56 +87,51 @@ int main(int argc, char* argv[]){
         fprintf(stdout, "Tables created successfully\n");
     }
 
-    //insertion dans table
-    sql = "INSERT INTO users(id,ip,port) VALUES (1,'122.252.185.91',8000);";
-
-    sqlite3_exec(db, sql, 0,0 ,&err_msg);
-
-    if (rc != SQLITE_OK ) {
-
-        fprintf(stderr, "Failed to insert in user table\n");
-        fprintf(stderr, "SQL error: %s\n", err_msg);
-        sqlite3_free(err_msg);
-        sqlite3_close(db);
-
-        return 1;
-    } else {
-
-        fprintf(stdout, "Table user populated succefuly\n");
-    }
-
-    //Recuperation données
-    sql = "SELECT * FROM users";
-
-    sqlite3_exec(db, sql, callback, 0,&err_msg);
-
-    if (rc != SQLITE_OK ) {
-
-        fprintf(stderr, "Failed to iget user data\n");
-        fprintf(stderr, "SQL error: %s\n", err_msg);
-        sqlite3_free(err_msg);
-        sqlite3_close(db);
-
-        return 1;
-    }
-
     sqlite3_close(db);
 
     return 0;
 }
 
-//affichage de toutes les lignes des queries
-int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 
-    NotUsed = 0;
+int setNode(uint32_t id, long ip, int port ) {
 
-    for (int i = 0; i < argc; i++) {
+    fprintf(stderr, "fonction setNode\n");
 
-        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    //ouverture base de donnée
+    int rc = sqlite3_open("test2.db", &db);
+
+    if (rc != SQLITE_OK) {
+
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 1;
+    } else {
+        fprintf(stdout, "database opened successfully\n");
     }
 
-    printf("\n");
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, "INSERT INTO users(id,ip,port) VALUES (?,?,?)",-1,&stmt,NULL)) {
+        fprintf(stderr,"Error: cannot execute sql statement\n");
+        sqlite3_close(db);
+        return 1;
+    }
+    //https://www.sqlite.org/c3ref/bind_blob.html
+    sqlite3_bind_int(stmt,1,id);
+    sqlite3_bind_int(stmt,2,ip);
+    sqlite3_bind_int(stmt,3,port);
+
+    sqlite3_step(stmt);
+
+    sqlite3_finalize(stmt);
+
+    sqlite3_close(db);
 
     return 0;
+
 }
 

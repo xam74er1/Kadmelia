@@ -11,7 +11,7 @@ FILE(GLOB UtilitaireH utilitaires/*.h)
 FILE(GLOB PackageC package/*.c)
 FILE(GLOB PackageH package/*.h)
 
-add_executable(${PROGAMENAME} Test/testSQLite.c ${PackageC} ${UtilitaireC} ${PackageH} ${UtilitaireH} package/publish_key.c lib/sqlite3.c lib/sqlite3.h)
+add_executable(${PROGAMENAME} Test/testHash.c ${PackageC} ${UtilitaireC} ${PackageH} ${UtilitaireH} package/publish_key.c lib/sqlite3.c lib/sqlite3.h)
 
 find_package(Threads REQUIRED)
 target_link_libraries(${PROGAMENAME}  pthread Threads::Threads dl)

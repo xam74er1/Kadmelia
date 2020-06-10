@@ -101,7 +101,7 @@ void iniAddr(Node * node){
     }
     memset(&node->addr_ip, 0, sizeof(node->addr_ip));
     node->addr_ip.sin_family    = AF_INET; // IPv4
-    node->addr_ip.sin_addr.s_addr = htonl (INADDR_ANY);
+    node->addr_ip.sin_addr.s_addr = htonl (INADDR_ANY);//Adresse ip
      node->addr_ip.sin_port = htons(portNum); //On le set a 0 pour lui dire de prendre un port par defaut pour la communication
      portNum++;
 }

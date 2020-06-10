@@ -47,6 +47,20 @@ node->listBucket[i] = b;
 }
     iniID(node);
     iniAddr(node);
+    iniFolder(node);
+}
+
+void iniIDSimple(Node * node,int id){
+    setNodeIdSimple(node,id);
+    for(int i = 0 ;i<NBBUCKET;i++){
+        Bucket * b = malloc(sizeof(Bucket));
+        b->nbVoisin=0;
+        node->listBucket[i] = b;
+    }
+    iniID(node);
+    iniAddr(node);
+    iniFolder(node);
+
 }
 
 //inilise id
@@ -99,4 +113,19 @@ printf("%s a un nvx voisin %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->i
         fprintf(stderr, "Erreur : de bukket pour %s il ne peux pas insere : %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->id));
     }
     add_node_to_bukket(toAdd,bucket);
+}
+
+void * iniFolder(Node * node){
+    struct stat st = {0};
+    struct stat stB = {0};
+//Si le dossie n'exite pas on le cree
+    if (stat(DIRECTORYTEST, &st) == -1) {
+        mkdir(DIRECTORYTEST, 0700);
+    }
+
+    char * folderNode = getPipeFromId(node->id);
+
+    if(stat(folderNode,&stB)==-1){
+        mkdir(folderNode, 0700);
+    }
 }

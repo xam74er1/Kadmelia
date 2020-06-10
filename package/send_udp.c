@@ -75,7 +75,7 @@ int tmp = bind(from->sockfd, (const struct sockaddr *) &from->addr_ip,
 
 
         Node test ;
-        printf("Test de merde : %d\n",&test);
+
         Node * reponce = malloc(sizeof(Node));
         memcpy(&type,buffer,sizeof(char));
         memcpy(&reponce->id,buffer+sizeof(char),IDLENGTH_INT*sizeof(uint32_t));
@@ -112,6 +112,9 @@ int tmp = bind(from->sockfd, (const struct sockaddr *) &from->addr_ip,
                 break;
             case MSG_FIND_NODE_REP:
                 receive_closed_node(from,reponce,buffer);
+                break;
+            case MSG_PUBLISH_KEY:
+
                 break;
             default:
                 printf("Message incunus");

@@ -13,7 +13,7 @@
 //Worik in Progresse
 
 
-void find_node(struct Node *node, int *id) {
+Node * find_node(struct Node *node, int *id) {
 
     printf("Debut de la rechesse de voisin pour id : %s \n",getPipeFromId(id));
     int nbVoisin = 1;
@@ -59,6 +59,8 @@ printf("\n");
     }while(delta>0);
 
     printf("Le voisin final est %s \n",getPipeFromId(tabVoisin[nbVoisin-1]->id));
+
+    return tabVoisin[nbVoisin-1];
 }
 /*
 *Input : la node en question , valleur de comparaison
@@ -87,11 +89,11 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
       min = xordistanceTableau(nodeMin->id, valleur, IDLENGTH_INT);
 
 
-
+//On parcoure le premier bucket non vide
     for(int j = 1;j<node->listBucket[i]->nbVoisin;j++){
-        int *delta = xordistanceTableau(node->listBucket[i]->bukket[j], valleur, IDLENGTH_INT);
+        int *delta = xordistanceTableau(node->listBucket[i]->bukket[j]->id, valleur, IDLENGTH_INT);
         //SI la node actelle est plus pete que la node min , elle devien le nvx min
-        printf("min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
+        printf("A min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
         if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
             free(min);
             min = delta;
@@ -105,9 +107,9 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
     for(i;i<NBBUCKET;i++){
         if(node->listBucket[i]->nbVoisin>0){
             for(int j = 0;j<node->listBucket[i]->nbVoisin;j++){
-                int *delta = xordistanceTableau(node->listBucket[i]->bukket[j], valleur, IDLENGTH_INT);
+                int *delta = xordistanceTableau(node->listBucket[i]->bukket[j]->id, valleur, IDLENGTH_INT);
                 //SI la node actelle est plus pete que la node min , elle devien le nvx min
-                printf("min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
+                printf("B min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
                 if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
                     free(min);
                     min = delta;
@@ -117,6 +119,7 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
             }
         }
     }
+
     if(nodeMin) {
         return nodeMin;
     }else{
@@ -159,6 +162,7 @@ printf("Node renvoyer %s\n",getPipeFromId(close->id));
     addVoisin(from,to);
 
 }
+
 
 void receive_closed_node(Node * from,Node * to,void * buffer){
     Node * close = malloc(sizeof(Node));

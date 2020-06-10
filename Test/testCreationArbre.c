@@ -142,11 +142,40 @@ addVoisin(&node1,&nodeStart);
 
 
 
+
+printf("\n\n\n--------");
+    for(int i =0;i<nb;i++) {
+        printf("Node : ");
+        printNode(tab[i]);
+printBukket(tab[i]);
+    }
+
+    printf("Node ");
+    printNode(&node1);
+    printBukket(&node1);
+
+    printf("Node ");
+    printNode(&nodeStart);
+    printBukket(&nodeStart);
+
+    printf("LAST FIND NODE");
+    sleep(1);
+    printf("------\n\n\n\n");
+    int * testTab[5];
+    for(int i = 0;i<5;i++){
+        testTab[i] = 0;
+    }
+
+
+    //On seche la node 0 , a la fin le messag dois etre "Le voisin final est nodespace/0-0-0-0-0 "
+    find_node(&node1,testTab);
+
     pthread_join(t2,NULL);
     pthread_join(t1,NULL);
     for (int j = 0; j < nb; ++j) {
         pthread_join(tabThread[j],NULL);
     }
+
 
     return 0;
 }

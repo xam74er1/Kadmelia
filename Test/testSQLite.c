@@ -67,12 +67,14 @@ int createDatabase () {
     }
 
     //creation table
-    char *sql = "CREATE TABLE IF NOT EXIST users(id BLOB,ip INT, port INT);"
-                "CREATE TABLE IF NOT EXIST titre(hash TEXT,string TEXT);"
-                "CREATE TABLE IF NOT EXIST fichier(hash TEXT, chemin_fichier TEXT);";
+    char *sql = "CREATE TABLE IF NOT EXISTS users(id BLOB,ip INT, port INT);"
+                "CREATE TABLE IF NOT EXISTS titre(hash TEXT,string TEXT);"
+                "CREATE TABLE IF NOT EXISTS fichier(hash TEXT, chemin_fichier TEXT);";
 
 
     sqlite3_exec(db, sql, 0,0 ,&err_msg);
+
+    printf("%s \n",err_msg);
 
     if (rc != SQLITE_OK ) {
 
@@ -117,8 +119,8 @@ int setNode(uint32_t id, long ip, int port ) {
 
     if (sqlite3_prepare_v2(db, "INSERT INTO users(id,ip,port) VALUES (?,?,?)",-1,&stmt,NULL)) {
         fprintf(stderr,"Error: cannot execute sql statement\n");
-        sqlite3_close(db);
-        return 1;
+       // sqlite3_close(db);
+        // return 1;
     }
     //https://www.sqlite.org/c3ref/bind_blob.html
     sqlite3_bind_int(stmt,1,id);

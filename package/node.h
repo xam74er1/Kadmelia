@@ -42,6 +42,9 @@
 #define MSG_FIND_NODE 4
 #define MSG_FIND_NODE_REP 5
 
+#define MSG_PUBLISH_KEY 6
+#define MSG_PUBLISH_KEY_OK 7
+
 typedef struct Node{
     int sockfd; //Socket de communcation pour recevoire
     struct sockaddr_in addr_ip; //tout les ip
@@ -54,9 +57,10 @@ typedef struct Node{
 
 //Constructeu de la node
 void ini(Node * fromNode);
+void iniIDSimple(Node * fromNode,int id);
 
 //Met un id a la node qui est juste un int , le reste est cmplet par des 0 .Cela sert a avoir un id de 5 int defini simpemnt (nottament pour la lecture humaine)
-void setNodeIdSimple(Node *fromNode, int id);
+void setNodeIdSimple(Node *node, int id);
 
 //serter pour un id
 void setNodeId(Node *fromNode, int id[IDLENGTH_INT]);
@@ -77,4 +81,6 @@ char *getPipeFromId(int *id);
 
 //ajoute une node dans le bon buckette
 void * addNodeToBukket(Node * from,Node * toAdd);
+
+void * iniFolder(Node * node);
 #endif //GROUPE7_NODE_H

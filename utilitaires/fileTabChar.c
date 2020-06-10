@@ -22,3 +22,13 @@ char *fileToChar(char *path) {
 
     }
 }
+
+int fileSize(char * path){
+    FILE *fich = NULL;
+    int sz = 0;
+    fich = fopen(path, "r");
+    fseek(fich, 0L, SEEK_END);
+    sz = ftell(fich);
+    fclose(fich);
+    return sz;
+}

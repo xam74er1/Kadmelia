@@ -7,6 +7,6 @@
 
 #include "node.h"
 
-void * publish_key(Node * node, int * hash);
+void * publish_key(Node * node, char * path);
 
 #endif //GROUPE7_PUBLISH_KEY_H

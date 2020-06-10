@@ -10,6 +10,7 @@
 
 int callback(void *, int, char **, char **);
 int createDatabase();
+int getNode(uint32_t);
 int setNode(uint32_t, long, int);
 
 int main(int argc, char* argv[]){
@@ -26,7 +27,7 @@ int main(int argc, char* argv[]){
     setNode(id,ip,port);
 
 
-    //getNode(id);
+    getNode(id);
 
 
     return 0;
@@ -67,7 +68,7 @@ int createDatabase () {
     }
 
     //creation table
-    char *sql = "CREATE TABLE IF NOT EXIST users(id BLOB,ip INT, port INT);"
+    char *sql = "CREATE TABLE IF NOT EXIST node(id BLOB,ip INT, port INT);"
                 "CREATE TABLE IF NOT EXIST titre(hash TEXT,string TEXT);"
                 "CREATE TABLE IF NOT EXIST fichier(hash TEXT, chemin_fichier TEXT);";
 
@@ -90,6 +91,51 @@ int createDatabase () {
     sqlite3_close(db);
 
     return 0;
+}
+
+int getNode(uint32_t id) {
+
+    fprintf(stderr, "fonction getNode\n");
+
+
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    //ouverture base de donnée
+    int rc = sqlite3_open("test2.db", &db);
+
+    if (rc != SQLITE_OK) {
+
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 1;
+    } else {
+        fprintf(stdout, "database opened successfully\n");
+    }
+
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, "SELECT id, ip, port FROM node WHERE id = ?",-1,&stmt,NULL)) {
+        fprintf(stderr,"Error: cannot execute sql statement GET\n");
+        sqlite3_close(db);
+        return 1;
+    }
+
+    //https://www.sqlite.org/c3ref/bind_blob.html
+    sqlite3_bind_int(stmt,1,id);
+
+    sqlite3_step(stmt);
+
+    fprintf(stdout, sqlite3_column_blob(stmt, 0));
+    fprintf(stdout,"%d\n", sqlite3_column_int(stmt, 1));
+    fprintf(stdout,"%d\n", sqlite3_column_int(stmt, 2));
+
+    sqlite3_finalize(stmt);
+
+    sqlite3_close(db);
+
+    return 0;
+
 }
 
 
@@ -115,8 +161,8 @@ int setNode(uint32_t id, long ip, int port ) {
 
     sqlite3_stmt *stmt;
 
-    if (sqlite3_prepare_v2(db, "INSERT INTO users(id,ip,port) VALUES (?,?,?)",-1,&stmt,NULL)) {
-        fprintf(stderr,"Error: cannot execute sql statement\n");
+    if (sqlite3_prepare_v2(db, "INSERT INTO node (id,ip,port) VALUES (?,?,?)",-1,&stmt,NULL)) {
+        fprintf(stderr,"Error: cannot execute sql statement SET %s \n", sqlite3_errmsg(db));
         sqlite3_close(db);
         return 1;
     }

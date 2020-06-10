@@ -55,7 +55,7 @@ int createDatabase () {
     char *err_msg = 0;
 
     //ouverture base de donnée
-    int rc = sqlite3_open("test2.db", &db);
+    int rc = sqlite3_open("test.db", &db);
 
     if (rc != SQLITE_OK) {
 
@@ -68,9 +68,9 @@ int createDatabase () {
     }
 
     //creation table
-    char *sql = "CREATE TABLE IF NOT EXIST node(id BLOB,ip INT, port INT);"
-                "CREATE TABLE IF NOT EXIST titre(hash TEXT,string TEXT);"
-                "CREATE TABLE IF NOT EXIST fichier(hash TEXT, chemin_fichier TEXT);";
+    char *sql = "CREATE TABLE IF NOT EXISTS node(id BLOB,ip INT, port INT);"
+                "CREATE TABLE IF NOT EXISTS titre(hash TEXT,string TEXT);"
+                "CREATE TABLE IF NOT EXISTS fichier(hash TEXT, chemin_fichier TEXT);";
 
 
     sqlite3_exec(db, sql, 0,0 ,&err_msg);
@@ -102,7 +102,7 @@ int getNode(uint32_t id) {
     char *err_msg = 0;
 
     //ouverture base de donnée
-    int rc = sqlite3_open("test2.db", &db);
+    int rc = sqlite3_open("test.db", &db);
 
     if (rc != SQLITE_OK) {
 
@@ -115,7 +115,7 @@ int getNode(uint32_t id) {
 
     sqlite3_stmt *stmt;
 
-    if (sqlite3_prepare_v2(db, "SELECT id, ip, port FROM node WHERE id = ?",-1,&stmt,NULL)) {
+    if (sqlite3_prepare_v2(db, "SELECT id, ip, port FROM node WHERE id = ?",-1,&stmt,NULL)!= SQLITE_OK) {
         fprintf(stderr,"Error: cannot execute sql statement GET\n");
         sqlite3_close(db);
         return 1;
@@ -148,7 +148,7 @@ int setNode(uint32_t id, long ip, int port ) {
     char *err_msg = 0;
 
     //ouverture base de donnée
-    int rc = sqlite3_open("test2.db", &db);
+    int rc = sqlite3_open("test.db", &db);
 
     if (rc != SQLITE_OK) {
 

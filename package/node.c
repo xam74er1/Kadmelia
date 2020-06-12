@@ -1,4 +1,5 @@
 #include "node.h"
+#include "bdd.h"
 
 
 /*
@@ -40,27 +41,28 @@ char *getPipeFromId(int *id) {
 
 void ini(Node *node) {
 iniID(node);
-for(int i = 0 ;i<NBBUCKET;i++){
-    Bucket * b = malloc(sizeof(Bucket));
-    b->nbVoisin=0;
-node->listBucket[i] = b;
-}
-    iniID(node);
-    iniAddr(node);
-    iniFolder(node);
+    iniCommun(node);
+
 }
 
 void iniIDSimple(Node * node,int id){
     setNodeIdSimple(node,id);
+iniCommun(node);
+
+
+}
+
+void iniCommun(Node * node){
     for(int i = 0 ;i<NBBUCKET;i++){
         Bucket * b = malloc(sizeof(Bucket));
         b->nbVoisin=0;
         node->listBucket[i] = b;
     }
-    iniID(node);
-    iniAddr(node);
-    iniFolder(node);
 
+    iniAddr(node);
+
+    iniFolder(node);
+    createDatabase(node);
 }
 
 //inilise id
@@ -137,3 +139,4 @@ void * iniFolder(Node * node){
         mkdir(folderNode, 0700);
     }
 }
+

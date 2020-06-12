@@ -26,6 +26,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+#include "../lib/sqlite3.h"
+
 //COnstante uttile
 #define IDLENGTH_INT 5 //Nombre de int qui compose un id (ici 5*32 = 160 bit)
 #define IDLENGTH_SIZE IDLENGTH_INT*sizeof(uint32_t)
@@ -56,6 +58,7 @@ typedef struct Node{
     struct Node * buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
     struct Bucket * listBucket[NBBUCKET];
     int tabIndex;
+    sqlite3 * db;
 }Node;
 
 
@@ -87,4 +90,7 @@ char *getPipeFromId(int *id);
 void * addNodeToBukket(Node * from,Node * toAdd);
 
 void * iniFolder(Node * node);
+
+
+void iniCommun(Node * node);
 #endif //GROUPE7_NODE_H

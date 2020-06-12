@@ -16,7 +16,9 @@ int callback(void *, int, char **, char **);
 
 int main(int argc, char* argv[]){
 
-    createDatabase();
+   Node from;
+
+   iniIDSimple(&from,1);
 
     uint32_t id[5] = { 4, 8 ,9 ,10, 110 };
     long ip = 454545;
@@ -36,9 +38,9 @@ int main(int argc, char* argv[]){
     Node node2;
     ini(&node2);
 
-    setNode(&node);
+    setNode(&from,&node);
 
-    getNode(id,&node2);
+    getNode(&from,id,&node2);
 
     Node node3;
     ini(&node3);
@@ -47,11 +49,11 @@ int main(int argc, char* argv[]){
     char nom[6] = { 'm', 'a', 't', 'r', 'i', 'x'};
     int taille = 12;
 
-    SetFile(id, fichier, id, nom, taille);
+    SetFile(&from,id, fichier, id, nom, taille);
 
-    findNode(fichier, &node3);
+    findNode(&from,fichier, &node3);
 
-   setlocalfile(nom,nom);
+   setlocalfile(&from,nom,nom);
 
     return 0;
 }

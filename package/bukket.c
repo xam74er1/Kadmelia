@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "bukket.h"
 //Initilse un bukket
-void iniBucket(Bucket * bucket){
+void iniBucketZ(Bucket * bucket){
 bucket->nbVoisin = 0;
 }
 

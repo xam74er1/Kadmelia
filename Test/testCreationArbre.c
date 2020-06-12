@@ -15,6 +15,7 @@
 #include "../package/node.h"
 #include "../package/send_udp.h"
 #include "../package/find_node.h"
+#include "../event/lisent.h"
 
 /*
  * OBjectife du test : verifie que une node trouve bien dans la node la plus proche dans le reseau
@@ -115,14 +116,14 @@ int main() {
     for (int i = 0; i < nb; ++i) {
         pthread_t tmp;
         tabThread[i] = &tmp;
-        pthread_create(tabThread[i],NULL,receive_udp,tab[i]);
+        pthread_create(tabThread[i],NULL,receive_paquette,tab[i]);
         sleep(0.1);
     }
     //On cree 2 thead qui auron pour role decoute quand on tente de communique avec la pipe
     sleep(1);
 
-    pthread_create(&t1,NULL,receive_udp,&node1);
-    pthread_create(&t2,NULL,receive_udp,&nodeStart);
+    pthread_create(&t1,NULL,receive_paquette,&node1);
+    pthread_create(&t2,NULL,receive_paquette,&nodeStart);
 
     sleep(1);
 

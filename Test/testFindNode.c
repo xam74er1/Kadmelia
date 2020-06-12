@@ -143,13 +143,13 @@ int main() {
     for (int i = 0; i < nb; ++i) {
         pthread_t tmp;
         tabThread[i] = &tmp;
-        pthread_create(tabThread[i],NULL,receive_udp,tab[i]);
+        pthread_create(tabThread[i],NULL,receive_paquette,tab[i]);
         sleep(0.1);
     }
     //On cree 2 thead qui auron pour role decoute quand on tente de communique avec la pipe
     sleep(1);
 
-    pthread_create(&t1,NULL,receive_udp,&node1);
+    pthread_create(&t1,NULL,receive_paquette,&node1);
 
     sleep(1);
 

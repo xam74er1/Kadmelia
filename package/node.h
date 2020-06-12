@@ -56,9 +56,9 @@ typedef struct Node{
     struct sockaddr_in addr_ip; //tout les ip
     uint32_t id[IDLENGTH_INT];//id de la node
     struct Node * buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg
-    struct Bucket * listBucket[NBBUCKET];
+    struct Bucket * listBucket[NBBUCKET]; //list de tout les bucket disponible
     int tabIndex;
-    sqlite3 * db;
+    sqlite3 * db; //pointeur vers la base de donne
 }Node;
 
 
@@ -89,8 +89,9 @@ char *getPipeFromId(int *id);
 //ajoute une node dans le bon buckette
 void * addNodeToBukket(Node * from,Node * toAdd);
 
+//Inilise le folder
 void * iniFolder(Node * node);
 
-
+//Partie comune pour initile les node
 void iniCommun(Node * node);
 #endif //GROUPE7_NODE_H

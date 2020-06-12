@@ -7,6 +7,7 @@
 #include "send_udp.h"
 #include "../utilitaires/hashFile.h"
 #include "../utilitaires/fileTabChar.h"
+#include "bdd.h"
 
 void * publish_key(Node * from,char * fileName){
 //Change le fichier pour quil sois logique
@@ -68,4 +69,6 @@ void * receive_publish_key(Node * from,Node * container,void * buffer){
     memcpy(fileName, buffer + decalage, sizeof(char)*nameLength);
     decalage+=sizeof(char)*nameLength;
 
+    //on enregistre en base de donne
+    SetFile(from,container->id,hashName,hashFile,fileName,fileSize);
 }

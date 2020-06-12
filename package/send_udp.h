@@ -8,7 +8,7 @@
 #include "../utilitaires/utilitaire.h"
 #define MAXRETURNNODE 32
 
-_Noreturn //Receois un message UDP
+//Receois un message UDP
 void receive_udp(Node * from);
 
 
@@ -22,4 +22,5 @@ Parametre :
  long size : taille des donne a envoyer
  */
 void send_udp(Node * from,Node * to,char  type,void * data,long size);
+
 #endif //GROUPE7_SEND_UDP_C_H

@@ -43,40 +43,21 @@ void send_udp(Node *from, Node *to, char type, void *data, long size) {
 }
 
 
-_Noreturn void receive_udp(Node *from) {
-
-    //Nbr de donne maximale que le serveur UDP peux recevoire = 255 node + type + id sender
+void receive_udp(Node *from) {
     int MAXDATA_UDP = 2*MAXRETURNNODE*(IDLENGTH_INT*sizeof(uint32_t)+sizeof(struct sockaddr_in))+sizeof(char)+IDLENGTH_INT*sizeof(uint32_t);
-
-    printf("recefe udp \n");
-    uint32_t id[IDLENGTH_INT];
-    char type="a";
+char type ='a';
     struct sockaddr_in fromAddr;
     int len = sizeof(fromAddr);
 
-    pthread_mutex_lock(&mutex);
-int tmp = bind(from->sock_udp, (const struct sockaddr *) &from->addr_ip,
-               sizeof(from->addr_ip));
-    // Bind the socket with the server address
-    if ( tmp< 0) {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
-    }else{
-        count++;
-        printf("bind ok %d \n",count);
-    }
-    pthread_mutex_unlock(&mutex);
-    printNode((struct Node *) from);
-    while (1) {
         void *buffer = malloc(MAXDATA_UDP);
         int n = recvfrom(from->sock_udp, buffer, MAXDATA_UDP,
                          MSG_WAITALL, (struct sockaddr *) &fromAddr,
                          &len);
-
-
         Node test ;
 
-        Node * reponce = malloc(sizeof(Node));
+
+
+            Node * reponce = malloc(sizeof(Node));
         memcpy(&type,buffer,sizeof(char));
         memcpy(&reponce->id,buffer+sizeof(char),IDLENGTH_INT*sizeof(uint32_t));
         reponce->addr_ip =fromAddr;
@@ -124,5 +105,5 @@ int tmp = bind(from->sock_udp, (const struct sockaddr *) &from->addr_ip,
         free(buffer);
     }
 
-    }
+
 }

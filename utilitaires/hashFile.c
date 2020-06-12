@@ -40,7 +40,7 @@ unsigned int *hashFile(char *path) {
             SHA1_Update(&c, buf, (unsigned long) i);
         }
         SHA1_Final(&hash->shachar, &c);
-
+fclose(f);
      return hash->shaint;
 
     } else {

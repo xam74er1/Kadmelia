@@ -12,7 +12,7 @@ FILE(GLOB UtilitaireH utilitaires/*.h)
 FILE(GLOB PackageC package/*.c)
 FILE(GLOB PackageH package/*.h)
 
-add_executable(${PROGAMENAME} Test/testClient.c ${UtilitaireC} ${PackageH} ${UtilitaireH} package/send_udp.c package/node.c  lib/sqlite3.c lib/sqlite3.h)
+add_executable(${PROGAMENAME} Test/testCreationArbre.c event/lisent.c event/lisent.h ${PackageC}  ${UtilitaireC} ${PackageH} ${UtilitaireH} lib/sqlite3.c lib/sqlite3.h)
 
 
 find_package(Threads REQUIRED)

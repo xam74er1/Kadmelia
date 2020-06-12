@@ -26,8 +26,8 @@ int main() {
 
     pthread_t t1,t2;
 
-    pthread_create(&t2,NULL,receive_udp,&nodeB);
-    pthread_create(&t1,NULL,receive_udp,&nodeA);
+    pthread_create(&t2,NULL,receive_paquette,&nodeB);
+    pthread_create(&t1,NULL,receive_paquette,&nodeA);
     sleep(2);
     printf("Apres thead \n");
     ping(&nodeA,&nodeB);

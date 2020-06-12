@@ -45,6 +45,9 @@
 #define MSG_PUBLISH_KEY 6
 #define MSG_PUBLISH_KEY_OK 7
 
+#define MSG_FIND_VALUE 8
+#define MSG_FIND_VALUE_REP 9
+
 typedef struct Node{
     int sockfd; //Socket de communcation pour recevoire
     struct sockaddr_in addr_ip; //tout les ip

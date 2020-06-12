@@ -63,7 +63,7 @@ void * receive_publish_key(Node * from,Node * container,void * buffer){
     decalage += sizeof(int);
     memcpy(&nameLength, buffer + decalage, sizeof(int));
     decalage += sizeof(int);
-
+//On recupere le nom du fichier
     char * fileName = malloc(sizeof(char)*nameLength);
     memcpy(fileName, buffer + decalage, sizeof(char)*nameLength);
     decalage+=sizeof(char)*nameLength;

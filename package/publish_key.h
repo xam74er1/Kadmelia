@@ -8,5 +8,5 @@
 #include "node.h"
 
 void * publish_key(Node * node, char * path);
-
+void * receive_publish_key(Node * from,Node * container,void * buffer);
 #endif //GROUPE7_PUBLISH_KEY_H

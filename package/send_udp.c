@@ -31,7 +31,7 @@ void send_udp(Node *from, Node *to, char type, void *data, long size) {
     lengthcopy += size;
 
     //On envois les donne cotneus dans la zone memoire
-    sendto(from->sockfd, dest, lengthcopy,
+    sendto(from->sock_udp, dest, lengthcopy,
            MSG_CONFIRM, (const struct sockaddr *) &to->addr_ip,
            sizeof(to->addr_ip));
 
@@ -55,7 +55,7 @@ _Noreturn void receive_udp(Node *from) {
     int len = sizeof(fromAddr);
 
     pthread_mutex_lock(&mutex);
-int tmp = bind(from->sockfd, (const struct sockaddr *) &from->addr_ip,
+int tmp = bind(from->sock_udp, (const struct sockaddr *) &from->addr_ip,
                sizeof(from->addr_ip));
     // Bind the socket with the server address
     if ( tmp< 0) {
@@ -69,7 +69,7 @@ int tmp = bind(from->sockfd, (const struct sockaddr *) &from->addr_ip,
     printNode((struct Node *) from);
     while (1) {
         void *buffer = malloc(MAXDATA_UDP);
-        int n = recvfrom(from->sockfd, buffer, MAXDATA_UDP,
+        int n = recvfrom(from->sock_udp, buffer, MAXDATA_UDP,
                          MSG_WAITALL, (struct sockaddr *) &fromAddr,
                          &len);
 

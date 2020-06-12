@@ -4,6 +4,7 @@ project(groupe7)
 set(CMAKE_C_STANDARD 11 )
 
 SET(PROGAMENAME test)
+SET(PROGAMENAME2 serveur)
 
 FILE(GLOB UtilitaireC utilitaires/*.c)
 FILE(GLOB UtilitaireH utilitaires/*.h)
@@ -11,9 +12,11 @@ FILE(GLOB UtilitaireH utilitaires/*.h)
 FILE(GLOB PackageC package/*.c)
 FILE(GLOB PackageH package/*.h)
 
-add_executable(${PROGAMENAME} Test/testHash.c ${PackageC} ${UtilitaireC} ${PackageH} ${UtilitaireH} package/publish_key.c lib/sqlite3.c lib/sqlite3.h)
+add_executable(${PROGAMENAME} Test/testClient.c ${UtilitaireC} ${PackageH} ${UtilitaireH} package/send_udp.c package/node.c  lib/sqlite3.c lib/sqlite3.h)
+
 
 find_package(Threads REQUIRED)
 target_link_libraries(${PROGAMENAME}  pthread Threads::Threads dl)
 target_link_libraries(${PROGAMENAME} crypto)
+
 

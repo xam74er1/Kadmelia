@@ -13,12 +13,12 @@ int callback(void *, int, char **, char **);
 int createDatabase();
 
 void getNode(uint32_t id[5], Node *node);
-void setNode(Node);
+void setNode(Node *node);
 
-Node * findNode(uint32_t hash[5]);
+void SetFile(uint32_t idnode[5], uint32_t hashword[5], uint32_t hashfile[5],char nom[], int taille);
+void findNode(uint32_t hash[5], Node * node);
 
 int main(int argc, char* argv[]){
-
 
     createDatabase();
 
@@ -29,7 +29,6 @@ int main(int argc, char* argv[]){
 
     Node node;
     ini(&node);
-    setNodeIdSimple(&node,4);
 
     node.id[0] = id[0];
     node.id[1] = id[1];
@@ -40,17 +39,27 @@ int main(int argc, char* argv[]){
 
     Node node2;
     ini(&node2);
-    setNodeIdSimple(&node2,4);
 
-
-    setNode(node);
+    setNode(&node);
 
     fprintf(stdout,"id post set: %d \n", node.id[0]);
 
-    getNode(id,&node);
+    getNode(id,&node2);
 
     fprintf(stdout,"id 2 post get: %d \n", node2.id[0]);
 
+    Node node3;
+    ini(&node3);
+
+    uint32_t fichier[5] = { 1, 2 ,3 ,4, 5 };
+    char nom[6] = { 'm', 'a', 't', 'r', 'i', 'x'};
+    int taille = 12;
+
+    SetFile(id, fichier, id, nom, taille);
+
+    findNode(fichier, &node3);
+
+    fprintf(stdout,"id 3 post get: %d \n", node3.id[1]);
 
 
     return 0;
@@ -156,11 +165,6 @@ void getNode(uint32_t id[5], Node *node) {
 
     sqlite3_step(stmt);
 
-    fprintf(stdout,"%d\n", sqlite3_column_blob(stmt, 0));
-    fprintf(stdout,"%d\n", sqlite3_column_int(stmt, 1));
-    fprintf(stdout,"%d\n", sqlite3_column_int(stmt, 2));
-
-
     int ip = sqlite3_column_int(stmt, 0);
     int port = sqlite3_column_int(stmt, 1);
 
@@ -179,22 +183,20 @@ void getNode(uint32_t id[5], Node *node) {
     sqlite3_close(db);
 }
 
-
-void setNode( Node node ) {
+void setNode( Node *node ) {
 
     fprintf(stderr, "fonction setNode\n");
 
     uint32_t id[5];
 
-    id[0] = node.id[0];
-    id[1] = node.id[1];
-    id[2] = node.id[2];
-    id[3] = node.id[3];
-    id[4] = node.id[4];
+    id[0] = node->id[0];
+    id[1] = node->id[1];
+    id[2] = node->id[2];
+    id[3] = node->id[3];
+    id[4] = node->id[4];
 
-    int ip = node.addr_ip.sin_addr.s_addr;
-    int port = node.addr_ip.sin_port;
-
+    int ip = node->addr_ip.sin_addr.s_addr;
+    int port = node->addr_ip.sin_port;
 
 
     sqlite3 *db;
@@ -235,8 +237,66 @@ void setNode( Node node ) {
     sqlite3_close(db);
 
 }
-/*
-Node * findNode(uint32_t hash[5]){
+
+void SetFile(uint32_t idnode[5], uint32_t hashword[5], uint32_t hashfile[5],char nom[], int taille){
+
+    fprintf(stderr, "fonction setFile\n");
+
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    //ouverture base de donnée
+    int rc = sqlite3_open("test.db", &db);
+
+    if (rc != SQLITE_OK) {
+
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    } else {
+        fprintf(stdout, "database opened successfully\n");
+    }
+
+    sqlite3_stmt *stmt;
+
+
+    if (sqlite3_prepare_v2(db, "INSERT INTO fichier (idnode1 , idnode2, idnode3, idnode4, idnode5, "
+                               "hashword1 , hashword2 , hashword3 , hashword4 , hashword5 , "
+                               "hashfile1 , hashfile2 , hashfile3 , hashfile4 , hashfile5 , nom , taille ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",-1,&stmt,NULL)) {
+        fprintf(stderr,"Error: cannot execute sql statement SET %s \n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    }
+
+    //https://www.sqlite.org/c3ref/bind_blob.html
+    sqlite3_bind_int(stmt,1,idnode[0]);
+    sqlite3_bind_int(stmt,2,idnode[1]);
+    sqlite3_bind_int(stmt,3,idnode[2]);
+    sqlite3_bind_int(stmt,4,idnode[3]);
+    sqlite3_bind_int(stmt,5,idnode[4]);
+    sqlite3_bind_int(stmt,6,hashword[0]);
+    sqlite3_bind_int(stmt,7,hashword[1]);
+    sqlite3_bind_int(stmt,8,hashword[2]);
+    sqlite3_bind_int(stmt,9,hashword[3]);
+    sqlite3_bind_int(stmt,10,hashword[4]);
+    sqlite3_bind_int(stmt,11,hashfile[0]);
+    sqlite3_bind_int(stmt,12,hashfile[1]);
+    sqlite3_bind_int(stmt,13,hashfile[2]);
+    sqlite3_bind_int(stmt,14,hashfile[3]);
+    sqlite3_bind_int(stmt,15,hashfile[4]);
+    sqlite3_bind_text(stmt,16,nom, sizeof(*nom), SQLITE_STATIC);
+    sqlite3_bind_int(stmt,17,taille);
+
+    sqlite3_step(stmt);
+
+    sqlite3_finalize(stmt);
+
+    sqlite3_close(db);
+
+
+}
+
+void findNode(uint32_t hash[5], Node *node){
 
     fprintf(stderr, "fonction findNode\n");
 
@@ -258,7 +318,7 @@ Node * findNode(uint32_t hash[5]){
 
     sqlite3_stmt *stmt;
 
-    if (sqlite3_prepare_v2(db, "SELECT idnode1 BLOB, idnode2 BLOB, idnode3 BLOB, idnode4 BLOB, idnode5 BLOB FROM fichier WHERE idword1 = ? AND idword2 = ? AND idword3 = ? AND idword4 = ? AND idword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
+    if (sqlite3_prepare_v2(db, "SELECT idnode1 BLOB, idnode2 BLOB, idnode3 BLOB, idnode4 BLOB, idnode5 BLOB FROM fichier WHERE hashword1 = ? AND hashword2 = ? AND hashword3 = ? AND hashword4 = ? AND hashword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
         fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
         sqlite3_close(db);
         exit(1);
@@ -282,19 +342,11 @@ Node * findNode(uint32_t hash[5]){
     idnode[3] = sqlite3_column_blob(stmt, 3);
     idnode[4] = sqlite3_column_blob(stmt, 4);
 
-    Node node;
-    ini(&node);
 
-    Node * node = malloc(sizeof(node));
-
-    node = getNode(idnode);
+    getNode(idnode, node);
 
     sqlite3_finalize(stmt);
 
     sqlite3_close(db);
 
-    return *node;
-
 }
-
-*/

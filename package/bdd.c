@@ -4,6 +4,7 @@
 
 #include "bdd.h"
 
+
 int createDatabase () {
 
     sqlite3 *db;
@@ -207,7 +208,7 @@ void SetFile(uint32_t idnode[5], uint32_t hashword[5], uint32_t hashfile[5],char
     sqlite3_bind_int(stmt,13,hashfile[2]);
     sqlite3_bind_int(stmt,14,hashfile[3]);
     sqlite3_bind_int(stmt,15,hashfile[4]);
-    sqlite3_bind_text(stmt,16,nom, sizeof(*nom), SQLITE_STATIC);
+    sqlite3_bind_text(stmt,16,nom, sizeof(nom), SQLITE_STATIC);
     sqlite3_bind_int(stmt,17,taille);
 
     sqlite3_step(stmt);
@@ -267,6 +268,45 @@ void findNode(uint32_t hash[5], Node *node){
 
 
     getNode(idnode, node);
+
+    sqlite3_finalize(stmt);
+
+    sqlite3_close(db);
+
+}
+
+void setlocalfile(char nom[], char chemin[]){
+
+    fprintf(stderr, "fonction setLocalfile\n");
+
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    //ouverture base de donnée
+    int rc = sqlite3_open("test.db", &db);
+
+    if (rc != SQLITE_OK) {
+
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    } else {
+        fprintf(stdout, "database opened successfully\n");
+    }
+
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, "INSERT INTO fichier_local (nom,chemin_fichier) VALUES (?,?)",-1,&stmt,NULL)) {
+        fprintf(stderr,"Error: cannot execute sql statement SET %s \n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    }
+
+    //https://www.sqlite.org/c3ref/bind_blob.html
+    sqlite3_bind_text(stmt,1,nom,sizeof(nom), SQLITE_STATIC);
+    sqlite3_bind_text(stmt,2,chemin,sizeof(chemin), SQLITE_STATIC);
+
+    sqlite3_step(stmt);
 
     sqlite3_finalize(stmt);
 

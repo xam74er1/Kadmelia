@@ -49,7 +49,8 @@
 #define MSG_FIND_VALUE_REP 9
 
 typedef struct Node{
-    int sockfd; //Socket de communcation pour recevoire
+    int sock_udp; //Socket de communcation pour udp
+    int sock_tcp; //Socket de communcation pour udp
     struct sockaddr_in addr_ip; //tout les ip
     uint32_t id[IDLENGTH_INT];//id de la node
     struct Node * buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg

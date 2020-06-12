@@ -95,10 +95,18 @@ void addVoisin(Node *original, Node *voisin){
 void iniAddr(Node * node){
 
     // Creating socket file descriptor
-    if ( (node->sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+    if ( (node->sock_udp = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
         perror("socket creation failed");
         exit(EXIT_FAILURE);
     }
+
+    if ( (node->sock_tcp = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
+        perror("socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+
+
+
     memset(&node->addr_ip, 0, sizeof(node->addr_ip));
     node->addr_ip.sin_family    = AF_INET; // IPv4
     node->addr_ip.sin_addr.s_addr = htonl (INADDR_ANY);//Adresse ip

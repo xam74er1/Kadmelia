@@ -44,14 +44,18 @@ int main(int argc, char* argv[]){
     ini(&node3);
 
     uint32_t fichier[5] = { 1, 2 ,3 ,4, 5 };
-    char nom[6] = { 'm', 'a', 't', 'r', 'i', 'x'};
+    char nom[] = "matrix";
+    char path[] = "filmpath";
     int taille = 12;
 
     SetFile(id, fichier, id, nom, taille);
 
     findNode(fichier, &node3);
 
-   setlocalfile(nom,nom);
+    setlocalfile(nom,path);
+    printf("nom recherché: %s\n", nom);
+    char* path2 = getfilepath(nom);
+    printf("resultat de la recherche: %s", path2);
 
     return 0;
 }

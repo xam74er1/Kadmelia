@@ -313,3 +313,51 @@ void setlocalfile(char nom[], char chemin[]){
     sqlite3_close(db);
 
 }
+
+char* getfilepath(char nom[]){
+
+    fprintf(stderr, "fonction getfilepath\n");
+
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    //ouverture base de donnée
+    int rc = sqlite3_open("test.db", &db);
+
+    if (rc != SQLITE_OK) {
+
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    } else {
+        fprintf(stdout, "database opened successfully\n");
+    }
+
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, "SELECT chemin_fichier FROM fichier_local WHERE nom LIKE ?",-1,&stmt,NULL)!= SQLITE_OK) {
+        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    }
+
+    //https://www.sqlite.org/c3ref/bind_blob.html
+    sqlite3_bind_text(stmt,1,nom, sizeof(nom), SQLITE_STATIC);
+
+    sqlite3_step(stmt);
+
+    char * cheminbuffer;
+    // utilisation d'un buffer car le pointeur disparait après sqlite3_finalize(stmt)
+    cheminbuffer = sqlite3_column_text(stmt, 0);
+
+    char *chemin = malloc(sizeof(cheminbuffer));
+    strcpy(chemin,cheminbuffer);
+
+    sqlite3_finalize(stmt);
+
+    sqlite3_close(db);
+
+
+    return chemin;
+
+}

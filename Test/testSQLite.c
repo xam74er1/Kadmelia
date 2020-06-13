@@ -14,12 +14,11 @@
 
 int callback(void *, int, char **, char **);
 
-
 int main(int argc, char* argv[]){
 
     createDatabase();
 
-    uint32_t id[5] = { 4, 8 ,9 ,10, 110 };
+    uint32_t id[5] = { 1, 2 ,3 ,4, 5 };
     long ip = 454545;
     int port = 8000;
     int bucket_id = 1 ;
@@ -33,6 +32,8 @@ int main(int argc, char* argv[]){
     node.id[3] = id[3];
     node.id[4] = id[4];
 
+    node.addr_ip.sin_addr.s_addr = ip;
+    node.addr_ip.sin_port = port;
 
     Node node2;
     ini(&node2);
@@ -52,11 +53,18 @@ int main(int argc, char* argv[]){
 
     Fichier fichier;
 
-    strcpy(fichier.idnode,idfichier);
-    strcpy(fichier.hashnom, idfichier);
-    strcpy(fichier.hashfichier,idfichier);
-    strcpy(fichier.nom, nom);
     fichier.taille = taille;
+
+    for(int i = 0 ; i<5 ; i++){
+        fichier.idnode[i] = idfichier[i];
+        fichier.hashnom[i] = idfichier[i];
+        fichier.hashfichier[i] = idfichier[i];
+    }
+    for(int i = 0 ; i<strlen(nom); i++){
+        fichier.nom[i] = nom[i];
+    }
+
+    printf("hashnom %d\n",fichier.hashnom[1]);
 
     SetFile(&fichier);
 
@@ -66,6 +74,14 @@ int main(int argc, char* argv[]){
     printf("nom recherché: %s\n", nom);
     char* path2 = getfilepath(nom);
     printf("resultat de la recherche: %s", path2);
+
+
+    Fichier fichier2;
+
+    Node node4;
+    ini(&node4);
+
+    getfichier(idfichier,&fichier2,&node4);
 
     return 0;
 }

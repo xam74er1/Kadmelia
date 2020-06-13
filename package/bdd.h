@@ -20,5 +20,6 @@ void findNode(uint32_t hash[5], Node * node);
 
 void setlocalfile(char nom[], char chemin[]);
 char* getfilepath(char nom[]);
+void getfichier(uint32_t hashnom[5], Fichier *fichier, Node *node);
 
 #endif //GROUPE7_BDD_H

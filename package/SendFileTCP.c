@@ -41,4 +41,5 @@ void write_file(Node *from, char *path){
     printf("the new file created is add1.txt \n");
     close(fp);
 
+
 }

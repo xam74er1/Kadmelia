@@ -68,13 +68,13 @@ int main(int argc, char* argv[]){
 
     printf("hashnom %d\n",fichier.hashnom[1]);
 
-    SetFile(&fichier);
+    SetFile(&from,&fichier);
 
-    findNode(idfichier, &node3);
+    findNode(&from,idfichier, &node3);
 
-    setlocalfile(nom,path);
+    setlocalfile(&from,nom,path);
     printf("nom recherché: %s\n", nom);
-    char* path2 = getfilepath(nom);
+    char* path2 = getfilepath(&from,nom);
     printf("resultat de la recherche: %s", path2);
 
 
@@ -83,7 +83,7 @@ int main(int argc, char* argv[]){
     Node node4;
     ini(&node4);
 
-    getfichier(idfichier,&fichier2,&node4);
+    getfichier(&from,idfichier,&fichier2,&node4);
 
     return 0;
 }

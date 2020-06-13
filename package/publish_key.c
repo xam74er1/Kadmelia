@@ -70,5 +70,7 @@ void * receive_publish_key(Node * from,Node * container,void * buffer){
     decalage+=sizeof(char)*nameLength;
 
     //on enregistre en base de donne
-    SetFile(from,container->id,hashName,hashFile,fileName,fileSize);
+    Fichier * f = malloc(sizeof(Fichier));
+    inFichier(f,container,hashName,hashFile,fileSize,fileName);
+    SetFile(from,f);
 }

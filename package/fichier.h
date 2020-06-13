@@ -6,6 +6,7 @@
 #define GROUPE7_FICHIER_H
 
 #include <stdint.h>
+#include "node.h"
 
 typedef struct Fichier{
     uint32_t idnode[5];
@@ -14,5 +15,7 @@ typedef struct Fichier{
     int taille;
     char nom[255];
 }Fichier;
+
+void inFichier(Fichier * fichier, Node *proprio ,uint32_t hashnom[5],uint32_t hashfichier[5],int taille,char nom[255]);
 
 #endif //GROUPE7_FICHIER_H

@@ -26,7 +26,6 @@ int createDatabase (Node * from) {
 
     //creation table
     char *sql = "CREATE TABLE IF NOT EXISTS node(id1 BLOB, id2 BLOB, id3 BLOB, id4 BLOB, id5 BLOB,ip INT, port INT, bucket_id INT, PRIMARY KEY (id1, id2,id3,id4,id5));"
-                "CREATE TABLE IF NOT EXISTS bucket(id BLOB, nb_voisin INT);"
                 "CREATE TABLE IF NOT EXISTS fichier_local(nom TEXT, chemin_fichier TEXT);"
                 "CREATE TABLE IF NOT EXISTS fichier("
                 "idnode1 BLOB, idnode2 BLOB, idnode3 BLOB, idnode4 BLOB, idnode5 BLOB, "

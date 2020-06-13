@@ -31,7 +31,8 @@ int createDatabase (Node * from) {
                 "idnode1 BLOB, idnode2 BLOB, idnode3 BLOB, idnode4 BLOB, idnode5 BLOB, "
                 "hashword1 BLOB, hashword2 BLOB, hashword3 BLOB, hashword4 BLOB, hashword5 BLOB, "
                 "hashfile1 BLOB, hashfile2 BLOB, hashfile3 BLOB, hashfile4 BLOB, hashfile5 BLOB, nom TEXT , taille INT,"
-                "PRIMARY KEY (hashword1, hashword2, hashword3, hashword4, hashword5));";
+                "PRIMARY KEY (hashword1, hashword2, hashword3, hashword4, hashword5),"
+                "FOREIGN KEY(idnode1, idnode2, idnode3, idnode4, idnode5) REFERENCES node(id1, id2,id3,id4,id5));";
 
 
     sqlite3_exec(from->db, sql, 0,0 ,&err_msg);

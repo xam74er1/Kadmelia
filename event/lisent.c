@@ -4,6 +4,7 @@
 
 #include "lisent.h"
 #include "../package/send_udp.h"
+#include "../package/sendFileTCP.h"
 
 _Noreturn void receive_paquette(Node * from){
     fd_set rset;
@@ -45,6 +46,11 @@ _Noreturn void receive_paquette(Node * from){
         //Si on recois de UDP
         if (FD_ISSET(from->sock_udp, &rset)) {
             receive_udp(from);
+        }
+        // Si on reçoit du TCP
+        if (FD_ISSET(from->sock_tcp, &rset)) {
+            send_tcp_file(from,to,"add.txt");
+            write_file(from, "add1.txt");
         }
     }
 }

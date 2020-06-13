@@ -50,7 +50,7 @@
 
 typedef struct Node{
     int sock_udp; //Socket de communcation pour udp
-    int sock_tcp; //Socket de communcation pour udp
+    int sock_tcp; //Socket de communcation pour tcp
     struct sockaddr_in addr_ip; //tout les ip
     uint32_t id[IDLENGTH_INT];//id de la node
     struct Node * buffer ;//Donne de transition pour les thread qui comminique ici , voir la partie  findClosedNeibourg

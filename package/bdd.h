@@ -8,13 +8,14 @@
 #include "../lib/sqlite3.h"
 #include <inttypes.h>
 #include "node.h"
+#include "fichier.h"
 
 int createDatabase();
 
 void getNode(uint32_t id[5], Node *node);
 void setNode(Node *node);
 
-void SetFile(uint32_t idnode[5], uint32_t hashword[5], uint32_t hashfile[5],char nom[], int taille);
+void SetFile(Fichier *fichier);
 void findNode(uint32_t hash[5], Node * node);
 
 void setlocalfile(char nom[], char chemin[]);

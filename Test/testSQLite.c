@@ -8,6 +8,7 @@
 #include <inttypes.h>
 #include "../package/node.h"
 #include "../package/bdd.h"
+#include "../package/fichier.h"
 
 
 
@@ -43,14 +44,23 @@ int main(int argc, char* argv[]){
     Node node3;
     ini(&node3);
 
-    uint32_t fichier[5] = { 1, 2 ,3 ,4, 5 };
+    uint32_t idfichier[5] = { 1, 2 ,3 ,4, 5 };
     char nom[] = "matrix";
     char path[] = "filmpath";
     int taille = 12;
 
-    SetFile(id, fichier, id, nom, taille);
 
-    findNode(fichier, &node3);
+    Fichier fichier;
+
+    strcpy(fichier.idnode,idfichier);
+    strcpy(fichier.hashnom, idfichier);
+    strcpy(fichier.hashfichier,idfichier);
+    strcpy(fichier.nom, nom);
+    fichier.taille = taille;
+
+    SetFile(&fichier);
+
+    findNode(idfichier, &node3);
 
     setlocalfile(nom,path);
     printf("nom recherché: %s\n", nom);

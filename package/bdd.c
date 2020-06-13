@@ -162,7 +162,7 @@ void setNode( Node *node ) {
 
 }
 
-void SetFile(uint32_t idnode[5], uint32_t hashword[5], uint32_t hashfile[5],char nom[], int taille){
+void SetFile( Fichier *fichier){
 
     fprintf(stderr, "fonction setFile\n");
 
@@ -193,23 +193,23 @@ void SetFile(uint32_t idnode[5], uint32_t hashword[5], uint32_t hashfile[5],char
     }
 
     //https://www.sqlite.org/c3ref/bind_blob.html
-    sqlite3_bind_int(stmt,1,idnode[0]);
-    sqlite3_bind_int(stmt,2,idnode[1]);
-    sqlite3_bind_int(stmt,3,idnode[2]);
-    sqlite3_bind_int(stmt,4,idnode[3]);
-    sqlite3_bind_int(stmt,5,idnode[4]);
-    sqlite3_bind_int(stmt,6,hashword[0]);
-    sqlite3_bind_int(stmt,7,hashword[1]);
-    sqlite3_bind_int(stmt,8,hashword[2]);
-    sqlite3_bind_int(stmt,9,hashword[3]);
-    sqlite3_bind_int(stmt,10,hashword[4]);
-    sqlite3_bind_int(stmt,11,hashfile[0]);
-    sqlite3_bind_int(stmt,12,hashfile[1]);
-    sqlite3_bind_int(stmt,13,hashfile[2]);
-    sqlite3_bind_int(stmt,14,hashfile[3]);
-    sqlite3_bind_int(stmt,15,hashfile[4]);
-    sqlite3_bind_text(stmt,16,nom, sizeof(nom), SQLITE_STATIC);
-    sqlite3_bind_int(stmt,17,taille);
+    sqlite3_bind_int(stmt,1,fichier->idnode[0]);
+    sqlite3_bind_int(stmt,2,fichier->idnode[1]);
+    sqlite3_bind_int(stmt,3,fichier->idnode[2]);
+    sqlite3_bind_int(stmt,4,fichier->idnode[3]);
+    sqlite3_bind_int(stmt,5,fichier->idnode[4]);
+    sqlite3_bind_int(stmt,6,fichier->hashnom[0]);
+    sqlite3_bind_int(stmt,7,fichier->hashnom[1]);
+    sqlite3_bind_int(stmt,8,fichier->hashnom[2]);
+    sqlite3_bind_int(stmt,9,fichier->hashnom[3]);
+    sqlite3_bind_int(stmt,10,fichier->hashnom[4]);
+    sqlite3_bind_int(stmt,11,fichier->hashfichier[0]);
+    sqlite3_bind_int(stmt,12,fichier->hashfichier[1]);
+    sqlite3_bind_int(stmt,13,fichier->hashfichier[2]);
+    sqlite3_bind_int(stmt,14,fichier->hashfichier[3]);
+    sqlite3_bind_int(stmt,15,fichier->hashfichier[4]);
+    sqlite3_bind_text(stmt,16,fichier->nom, strlen(fichier->nom), SQLITE_STATIC);
+    sqlite3_bind_int(stmt,17,fichier->taille);
 
     sqlite3_step(stmt);
 

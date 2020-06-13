@@ -5,12 +5,14 @@
 #ifndef GROUPE7_FICHIER_H
 #define GROUPE7_FICHIER_H
 
+#include <stdint.h>
+
 typedef struct Fichier{
     uint32_t idnode[5];
-    uint32_t nom[5];
-    uint32_t fichier[5];
-    char nom[];
+    uint32_t hashnom[5];
+    uint32_t hashfichier[5];
     int taille;
+    char nom[];
 }Fichier;
 
 #endif //GROUPE7_FICHIER_H

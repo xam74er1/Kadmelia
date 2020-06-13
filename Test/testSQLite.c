@@ -34,6 +34,8 @@ int main(int argc, char* argv[]){
     node.id[3] = id[3];
     node.id[4] = id[4];
 
+    node.addr_ip.sin_addr.s_addr = ip;
+    node.addr_ip.sin_port = port;
 
     Node node2;
     ini(&node2);
@@ -45,15 +47,43 @@ int main(int argc, char* argv[]){
     Node node3;
     ini(&node3);
 
-    uint32_t fichier[5] = { 1, 2 ,3 ,4, 5 };
-    char nom[6] = { 'm', 'a', 't', 'r', 'i', 'x'};
+    uint32_t idfichier[5] = { 1, 2 ,3 ,4, 5 };
+    char nom[] = "matrix";
+    char path[] = "filmpath";
     int taille = 12;
 
-    SetFile(&from,id, fichier, id, nom, taille);
 
-    findNode(&from,fichier, &node3);
+    Fichier fichier;
 
-   setlocalfile(&from,nom,nom);
+    fichier.taille = taille;
+
+    for(int i = 0 ; i<5 ; i++){
+        fichier.idnode[i] = idfichier[i];
+        fichier.hashnom[i] = idfichier[i];
+        fichier.hashfichier[i] = idfichier[i];
+    }
+    for(int i = 0 ; i<strlen(nom); i++){
+        fichier.nom[i] = nom[i];
+    }
+
+    printf("hashnom %d\n",fichier.hashnom[1]);
+
+    SetFile(&fichier);
+
+    findNode(idfichier, &node3);
+
+    setlocalfile(nom,path);
+    printf("nom recherché: %s\n", nom);
+    char* path2 = getfilepath(nom);
+    printf("resultat de la recherche: %s", path2);
+
+
+    Fichier fichier2;
+
+    Node node4;
+    ini(&node4);
+
+    getfichier(idfichier,&fichier2,&node4);
 
     return 0;
 }

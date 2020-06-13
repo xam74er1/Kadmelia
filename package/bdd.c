@@ -143,7 +143,7 @@ void setNode( Node * from,Node *node ) {
 
 }
 
-void SetFile(Node * from,uint32_t idnode[5], uint32_t hashword[5], uint32_t hashfile[5],char nom[], int taille){
+void SetFile( Fichier *fichier){
 
     fprintf(stderr, "fonction setFile\n");
 
@@ -164,23 +164,23 @@ void SetFile(Node * from,uint32_t idnode[5], uint32_t hashword[5], uint32_t hash
     }
 
     //https://www.sqlite.org/c3ref/bind_blob.html
-    sqlite3_bind_int(stmt,1,idnode[0]);
-    sqlite3_bind_int(stmt,2,idnode[1]);
-    sqlite3_bind_int(stmt,3,idnode[2]);
-    sqlite3_bind_int(stmt,4,idnode[3]);
-    sqlite3_bind_int(stmt,5,idnode[4]);
-    sqlite3_bind_int(stmt,6,hashword[0]);
-    sqlite3_bind_int(stmt,7,hashword[1]);
-    sqlite3_bind_int(stmt,8,hashword[2]);
-    sqlite3_bind_int(stmt,9,hashword[3]);
-    sqlite3_bind_int(stmt,10,hashword[4]);
-    sqlite3_bind_int(stmt,11,hashfile[0]);
-    sqlite3_bind_int(stmt,12,hashfile[1]);
-    sqlite3_bind_int(stmt,13,hashfile[2]);
-    sqlite3_bind_int(stmt,14,hashfile[3]);
-    sqlite3_bind_int(stmt,15,hashfile[4]);
-    sqlite3_bind_text(stmt,16,nom, sizeof(nom), SQLITE_STATIC);
-    sqlite3_bind_int(stmt,17,taille);
+    sqlite3_bind_int(stmt,1,fichier->idnode[0]);
+    sqlite3_bind_int(stmt,2,fichier->idnode[1]);
+    sqlite3_bind_int(stmt,3,fichier->idnode[2]);
+    sqlite3_bind_int(stmt,4,fichier->idnode[3]);
+    sqlite3_bind_int(stmt,5,fichier->idnode[4]);
+    sqlite3_bind_int(stmt,6,fichier->hashnom[0]);
+    sqlite3_bind_int(stmt,7,fichier->hashnom[1]);
+    sqlite3_bind_int(stmt,8,fichier->hashnom[2]);
+    sqlite3_bind_int(stmt,9,fichier->hashnom[3]);
+    sqlite3_bind_int(stmt,10,fichier->hashnom[4]);
+    sqlite3_bind_int(stmt,11,fichier->hashfichier[0]);
+    sqlite3_bind_int(stmt,12,fichier->hashfichier[1]);
+    sqlite3_bind_int(stmt,13,fichier->hashfichier[2]);
+    sqlite3_bind_int(stmt,14,fichier->hashfichier[3]);
+    sqlite3_bind_int(stmt,15,fichier->hashfichier[4]);
+    sqlite3_bind_text(stmt,16,fichier->nom, strlen(fichier->nom), SQLITE_STATIC);
+    sqlite3_bind_int(stmt,17,fichier->taille);
 
     sqlite3_step(stmt);
 
@@ -203,9 +203,9 @@ void findNode(Node * from,uint32_t hash[5], Node *node){
 
     sqlite3_stmt *stmt;
 
-    if (sqlite3_prepare_v2(from->db, "SELECT idnode1 BLOB, idnode2 BLOB, idnode3 BLOB, idnode4 BLOB, idnode5 BLOB FROM fichier WHERE hashword1 = ? AND hashword2 = ? AND hashword3 = ? AND hashword4 = ? AND hashword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
-        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(from->db));
-       // sqlite3_close(from->db);
+    if (sqlite3_prepare_v2(db, "SELECT idnode1, idnode2, idnode3 , idnode4 , idnode5  FROM fichier WHERE hashword1 = ? AND hashword2 = ? AND hashword3 = ? AND hashword4 = ? AND hashword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
+        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
+        sqlite3_close(db);
         exit(1);
     }
 
@@ -263,5 +263,127 @@ void setlocalfile(Node * from,char nom[], char chemin[]){
     sqlite3_finalize(stmt);
 
     //sqlite3_close(from->db);
+
+}
+
+char* getfilepath(char nom[]){
+
+    fprintf(stderr, "fonction getfilepath\n");
+
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    //ouverture base de donnée
+    int rc = sqlite3_open("test.db", &db);
+
+    if (rc != SQLITE_OK) {
+
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    } else {
+        fprintf(stdout, "database opened successfully\n");
+    }
+
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, "SELECT chemin_fichier FROM fichier_local WHERE nom LIKE ?",-1,&stmt,NULL)!= SQLITE_OK) {
+        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    }
+
+    //https://www.sqlite.org/c3ref/bind_blob.html
+    sqlite3_bind_text(stmt,1,nom, sizeof(nom), SQLITE_STATIC);
+
+    sqlite3_step(stmt);
+
+    char * cheminbuffer;
+    // utilisation d'un buffer car le pointeur disparait après sqlite3_finalize(stmt)
+    cheminbuffer = sqlite3_column_text(stmt, 0);
+
+    char *chemin = malloc(sizeof(cheminbuffer));
+    strcpy(chemin,cheminbuffer);
+
+    sqlite3_finalize(stmt);
+
+    sqlite3_close(db);
+
+
+    return chemin;
+
+}
+
+void getfichier(uint32_t hashnom[5], Fichier *fichier, Node *node){
+
+    fprintf(stderr, "fonction get fichier\n");
+
+    sqlite3 *db;
+    char *err_msg = 0;
+
+    //ouverture base de donnée
+    int rc = sqlite3_open("test.db", &db);
+
+    if (rc != SQLITE_OK) {
+
+        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+
+    } else {
+        fprintf(stdout, "database opened successfully\n");
+    }
+
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, "SELECT idnode1 , idnode2 , idnode3 , idnode4 , idnode5 ,"
+                               " hashfile1 , hashfile2 , hashfile3 , hashfile4 , hashfile5 ,"
+                               " nom  , taille"
+                               " FROM fichier WHERE hashword1 = ? AND hashword2 = ? AND hashword3 = ? AND hashword4 = ? AND hashword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
+        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        exit(1);
+    }
+
+    //https://www.sqlite.org/c3ref/bind_blob.html
+    sqlite3_bind_int(stmt,1,hashnom[0]);
+    sqlite3_bind_int(stmt,2,hashnom[1]);
+    sqlite3_bind_int(stmt,3,hashnom[2]);
+    sqlite3_bind_int(stmt,4,hashnom[3]);
+    sqlite3_bind_int(stmt,5,hashnom[4]);
+
+
+    sqlite3_step(stmt);
+
+
+    uint32_t idnode[5];
+
+    idnode[0] = sqlite3_column_int(stmt, 0);
+    idnode[1] = sqlite3_column_int(stmt, 1);
+    idnode[2] = sqlite3_column_int(stmt, 2);
+    idnode[3] = sqlite3_column_int(stmt, 3);
+    idnode[4] = sqlite3_column_int(stmt, 4);
+
+
+    getNode(idnode, node);
+
+    for(int i=0; i<5; i++){
+        fichier->idnode[i] = idnode[i];
+    }
+    for(int i=5; i<10; i++){
+        fichier->hashfichier[i-5] = sqlite3_column_int(stmt, i);
+    }
+    char * nom = sqlite3_column_text(stmt, 10);
+    for(int i=0; i<5; i++){
+        fichier->nom[i] = nom[i];
+    }
+    fichier->taille = sqlite3_column_int(stmt,11);
+    for(int i=0; i<5; i++){
+        fichier->hashnom[i] = hashnom[i];
+    }
+
+    sqlite3_finalize(stmt);
+
+    sqlite3_close(db);
 
 }

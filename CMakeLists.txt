@@ -3,8 +3,8 @@ project(groupe7)
 
 set(CMAKE_C_STANDARD 11 )
 
-SET(PROGAMENAME test)
-SET(PROGAMENAME2 serveur)
+SET(PROGAMENAME serveur)
+SET(SendName send)
 
 FILE(GLOB UtilitaireC utilitaires/*.c)
 FILE(GLOB UtilitaireH utilitaires/*.h)

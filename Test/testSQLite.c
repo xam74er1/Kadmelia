@@ -26,7 +26,7 @@ int main(int argc, char* argv[]){
     int bucket_id = 1 ;
 
     Node node;
-    ini(&node);
+    iniIDSimple(&node,2);
 
     node.id[0] = id[0];
     node.id[1] = id[1];
@@ -34,18 +34,20 @@ int main(int argc, char* argv[]){
     node.id[3] = id[3];
     node.id[4] = id[4];
 
+    iniCommun(&node);
+
     node.addr_ip.sin_addr.s_addr = ip;
     node.addr_ip.sin_port = port;
 
     Node node2;
-    ini(&node2);
+    iniIDSimple(&node2,3);
 
     setNode(&from,&node);
 
     getNode(&from,id,&node2);
 
     Node node3;
-    ini(&node3);
+    iniIDSimple(&node3,4);
 
     uint32_t idfichier[5] = { 1, 2 ,3 ,4, 5 };
     char nom[] = "matrix";
@@ -84,6 +86,16 @@ int main(int argc, char* argv[]){
     ini(&node4);
 
     getfichier(&from,idfichier,&fichier2,&node4);
+
+    //But trouve un fichier qui n'existe pas
+
+    uint32_t idfichier2[5] = { 9, 9 ,3 ,4, 5 };
+   // getfichier(&from,idfichier2,&fichier2,&node4);
+
+    //on tente d'ajoute une nvll fois une node qui est deja present :
+
+    setNode(&from,&node);
+
 
     return 0;
 }

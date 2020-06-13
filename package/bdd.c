@@ -143,7 +143,7 @@ void setNode( Node * from,Node *node ) {
 
 }
 
-void SetFile( Fichier *fichier){
+void SetFile(Node * from, Fichier *fichier){
 
     fprintf(stderr, "fonction setFile\n");
 
@@ -203,9 +203,9 @@ void findNode(Node * from,uint32_t hash[5], Node *node){
 
     sqlite3_stmt *stmt;
 
-    if (sqlite3_prepare_v2(db, "SELECT idnode1, idnode2, idnode3 , idnode4 , idnode5  FROM fichier WHERE hashword1 = ? AND hashword2 = ? AND hashword3 = ? AND hashword4 = ? AND hashword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
-        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
-        sqlite3_close(db);
+    if (sqlite3_prepare_v2(from->db, "SELECT idnode1, idnode2, idnode3 , idnode4 , idnode5  FROM fichier WHERE hashword1 = ? AND hashword2 = ? AND hashword3 = ? AND hashword4 = ? AND hashword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
+        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(from->db));
+        sqlite3_close(from->db);
         exit(1);
     }
 
@@ -266,30 +266,22 @@ void setlocalfile(Node * from,char nom[], char chemin[]){
 
 }
 
-char* getfilepath(char nom[]){
+char* getfilepath(Node * from,char nom[]){
 
     fprintf(stderr, "fonction getfilepath\n");
 
-    sqlite3 *db;
+
     char *err_msg = 0;
 
-    //ouverture base de donnée
-    int rc = sqlite3_open("test.db", &db);
 
-    if (rc != SQLITE_OK) {
 
-        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        exit(1);
-    } else {
-        fprintf(stdout, "database opened successfully\n");
-    }
+
 
     sqlite3_stmt *stmt;
 
-    if (sqlite3_prepare_v2(db, "SELECT chemin_fichier FROM fichier_local WHERE nom LIKE ?",-1,&stmt,NULL)!= SQLITE_OK) {
-        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
-        sqlite3_close(db);
+    if (sqlite3_prepare_v2(from->db, "SELECT chemin_fichier FROM fichier_local WHERE nom LIKE ?",-1,&stmt,NULL)!= SQLITE_OK) {
+        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(from->db));
+        sqlite3_close(from->db);
         exit(1);
     }
 
@@ -307,41 +299,31 @@ char* getfilepath(char nom[]){
 
     sqlite3_finalize(stmt);
 
-    sqlite3_close(db);
+    //sqlite3_close(from->db);
 
 
     return chemin;
 
 }
 
-void getfichier(uint32_t hashnom[5], Fichier *fichier, Node *node){
+void getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
 
     fprintf(stderr, "fonction get fichier\n");
 
-    sqlite3 *db;
+
     char *err_msg = 0;
 
     //ouverture base de donnée
-    int rc = sqlite3_open("test.db", &db);
 
-    if (rc != SQLITE_OK) {
-
-        fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        exit(1);
-
-    } else {
-        fprintf(stdout, "database opened successfully\n");
-    }
 
     sqlite3_stmt *stmt;
 
-    if (sqlite3_prepare_v2(db, "SELECT idnode1 , idnode2 , idnode3 , idnode4 , idnode5 ,"
+    if (sqlite3_prepare_v2(from->db, "SELECT idnode1 , idnode2 , idnode3 , idnode4 , idnode5 ,"
                                " hashfile1 , hashfile2 , hashfile3 , hashfile4 , hashfile5 ,"
                                " nom  , taille"
                                " FROM fichier WHERE hashword1 = ? AND hashword2 = ? AND hashword3 = ? AND hashword4 = ? AND hashword5 =? ",-1,&stmt,NULL)!= SQLITE_OK) {
-        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(db));
-        sqlite3_close(db);
+        fprintf(stderr,"Error: cannot execute sql statement GET %s \n", sqlite3_errmsg(from->db));
+      //  sqlite3_close(from->db);
         exit(1);
     }
 
@@ -365,7 +347,7 @@ void getfichier(uint32_t hashnom[5], Fichier *fichier, Node *node){
     idnode[4] = sqlite3_column_int(stmt, 4);
 
 
-    getNode(idnode, node);
+    getNode(from,idnode, node);
 
     for(int i=0; i<5; i++){
         fichier->idnode[i] = idnode[i];
@@ -384,6 +366,6 @@ void getfichier(uint32_t hashnom[5], Fichier *fichier, Node *node){
 
     sqlite3_finalize(stmt);
 
-    sqlite3_close(db);
+   // sqlite3_close(from->db);
 
 }

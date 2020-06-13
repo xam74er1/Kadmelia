@@ -91,6 +91,7 @@ void getNode(Node * from,uint32_t id[5], Node *node) {
 
     node->addr_ip.sin_addr.s_addr = ip;
     node->addr_ip.sin_port = port;
+    node->addr_ip.sin_family    = AF_INET; // IPv4
 
     sqlite3_finalize(stmt);
 
@@ -272,10 +273,6 @@ char* getfilepath(Node * from,char nom[]){
 
 
     char *err_msg = 0;
-
-
-
-
 
     sqlite3_stmt *stmt;
 

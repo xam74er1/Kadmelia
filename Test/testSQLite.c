@@ -83,7 +83,7 @@ int main(int argc, char* argv[]){
     Fichier fichier2;
 
     Node node4;
-    ini(&node4);
+    iniIDSimple(&node4,6);
 
     getfichier(&from,idfichier,&fichier2,&node4);
 

@@ -60,7 +60,6 @@ void iniCommun(Node * node){
     }
 
     iniAddr(node);
-
     iniFolder(node);
     createDatabase(node);
 }

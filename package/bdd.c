@@ -25,13 +25,14 @@ int createDatabase (Node * from) {
     }
 
     //creation table
-    char *sql = "CREATE TABLE IF NOT EXISTS node(id1 BLOB, id2 BLOB, id3 BLOB, id4 BLOB, id5 BLOB,ip INT, port INT, bucket_id INT);"
+    char *sql = "CREATE TABLE IF NOT EXISTS node(id1 BLOB, id2 BLOB, id3 BLOB, id4 BLOB, id5 BLOB,ip INT, port INT, bucket_id INT, PRIMARY KEY (id1, id2,id3,id4,id5));"
                 "CREATE TABLE IF NOT EXISTS bucket(id BLOB, nb_voisin INT);"
                 "CREATE TABLE IF NOT EXISTS fichier_local(nom TEXT, chemin_fichier TEXT);"
                 "CREATE TABLE IF NOT EXISTS fichier("
                 "idnode1 BLOB, idnode2 BLOB, idnode3 BLOB, idnode4 BLOB, idnode5 BLOB, "
                 "hashword1 BLOB, hashword2 BLOB, hashword3 BLOB, hashword4 BLOB, hashword5 BLOB, "
-                "hashfile1 BLOB, hashfile2 BLOB, hashfile3 BLOB, hashfile4 BLOB, hashfile5 BLOB, nom TEXT , taille INT);";
+                "hashfile1 BLOB, hashfile2 BLOB, hashfile3 BLOB, hashfile4 BLOB, hashfile5 BLOB, nom TEXT , taille INT,"
+                "PRIMARY KEY (hashword1, hashword2, hashword3, hashword4, hashword5));";
 
 
     sqlite3_exec(from->db, sql, 0,0 ,&err_msg);

@@ -17,6 +17,6 @@ void inFichier(Fichier * fichier, Node *proprio ,uint32_t hashnom[5],uint32_t ha
     }
 
     fichier->taille = taille;
-    strcpy(fichier->taille,nom);
+    strcpy(fichier->nom,nom);
 
 }

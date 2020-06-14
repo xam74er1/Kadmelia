@@ -11,7 +11,10 @@
 #define Nmax 100
 
 void send_tcp_file(Node * from,Node * to , char * path);
-void write_file(Node *from, char *path);
+void write_file(Node *from, int confd,char *path);
+void accecpt_to_send_file(Node * from);
+void requeste_file(Node * from,Node * to,char * fileName);
+
 
 
 

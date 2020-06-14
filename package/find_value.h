@@ -9,4 +9,5 @@
 
 void * find_value(Node * from, Node * to, int * hash);
 void * receive_find_value(Node * from,Node * container,void * buffer);
+void * receive_find_value_rep(Node * from,Node * container,void * buffer);
 #endif //GROUPE7_FIND_VALUE_H

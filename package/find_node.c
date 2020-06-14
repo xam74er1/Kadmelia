@@ -58,7 +58,7 @@ Node * find_node(struct Node *node, int *id) {
 printf("\n");
     }while(delta>0);
 
-    printf("Le voisin final est %s \n",getPipeFromId(tabVoisin[nbVoisin-1]->id));
+    printf("\033[1;35m Le voisin final est %s \033[0m \n\n",getPipeFromId(tabVoisin[nbVoisin-1]->id));
 
     return tabVoisin[nbVoisin-1];
 }

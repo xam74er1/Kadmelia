@@ -18,6 +18,7 @@ _Noreturn void receive_paquette(Node * from){
                    sizeof(from->addr_ip));
     // Bind the socket with the server address
     if ( tmp< 0) {
+
         perror("bind failed");
         exit(EXIT_FAILURE);
     }else{
@@ -50,8 +51,7 @@ _Noreturn void receive_paquette(Node * from){
         }
         // Si on reçoit du TCP
         if (FD_ISSET(from->sock_tcp, &rset)) {
-        //    send_tcp_file(from,to,"add.txt");
-       //     write_file(from, "add1.txt");
+            accecpt_to_send_file(from);
         }
     }
 }

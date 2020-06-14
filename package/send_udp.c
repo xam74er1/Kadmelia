@@ -4,6 +4,8 @@
 #include "send_udp.h"
 #include "ping.h"
 #include "find_node.h"
+#include "publish_key.h"
+#include "find_value.h"
 #include <pthread.h>
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static int count = 0;
@@ -95,8 +97,15 @@ char type ='a';
                 receive_closed_node(from,reponce,buffer);
                 break;
             case MSG_PUBLISH_KEY:
-
+                receive_publish_key(from,reponce,buffer);
                 break;
+            case MSG_FIND_VALUE:
+                receive_find_value(from,reponce,buffer);
+                break;
+            case MSG_FIND_VALUE_REP:
+                receive_find_value_rep(from,reponce,buffer);
+                break;
+
             default:
                 printf("Message incunus");
         }

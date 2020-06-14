@@ -50,3 +50,33 @@ void * receive_find_value(Node * from,Node * container,void * buffer){
     send_udp(from,container,MSG_FIND_VALUE_REP,data,size);
 
 }
+/*
+ * Possible pbr de secutire qui permtrai a nimporte qui de fair telecharge un fichier mais on a pas le temps pour sa.
+ * Il faut verfie que les info voulus coreponde bien au fichier demende
+ */
+void * receive_find_value_rep(Node * from,Node * container,void * buffer){
+    int decalage = sizeof(char)+IDLENGTH_SIZE;
+
+    char hashData = 0;
+    memcpy(&hashData,buffer+decalage,sizeof(char));
+    decalage+=sizeof(char);
+
+    if(hashData){
+Fichier * f = malloc(sizeof(Fichier));
+Node n ;
+
+        memcpy(f,buffer+decalage,sizeof(Fichier));
+        decalage+=sizeof(Fichier);
+        memcpy(&n.addr_ip,buffer+decalage,sizeof(struct sockaddr_in));
+
+        for (int i = 0; i <IDLENGTH_INT ; ++i) {
+            n.id[i] =f->idnode[i];
+        }
+
+    }else{
+        //Ne pas remove (cet pas du debug)
+        printf("Nous n'avons pas pus trouve les donne corespondate a votre film");
+    }
+
+
+}

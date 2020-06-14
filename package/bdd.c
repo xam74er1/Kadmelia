@@ -78,21 +78,27 @@ void getNode(Node * from,uint32_t id[5], Node *node) {
     sqlite3_bind_int(stmt,4,id[3]);
     sqlite3_bind_int(stmt,5,id[4]);
 
-    sqlite3_step(stmt);
 
-    int ip = sqlite3_column_int(stmt, 0);
-    int port = sqlite3_column_int(stmt, 1);
+    int status =  sqlite3_step(stmt);
+
+    //si il y a un resultat
+    if(status == SQLITE_ROW) {
+
+        int ip = sqlite3_column_int(stmt, 0);
+        int port = sqlite3_column_int(stmt, 1);
 
 
-    node->id[0] = id[0];
-    node->id[1] = id[1];
-    node->id[2] = id[2];
-    node->id[3] = id[3];
-    node->id[4] = id[4];
+        node->id[0] = id[0];
+        node->id[1] = id[1];
+        node->id[2] = id[2];
+        node->id[3] = id[3];
+        node->id[4] = id[4];
 
-    node->addr_ip.sin_addr.s_addr = ip;
-    node->addr_ip.sin_port = port;
-    node->addr_ip.sin_family    = AF_INET; // IPv4
+        node->addr_ip.sin_addr.s_addr = ip;
+        node->addr_ip.sin_port = port;
+        node->addr_ip.sin_family = AF_INET; // IPv4
+
+    }
 
     sqlite3_finalize(stmt);
 
@@ -218,19 +224,24 @@ void findNode(Node * from,uint32_t hash[5], Node *node){
     sqlite3_bind_int(stmt,4,hash[3]);
     sqlite3_bind_int(stmt,5,hash[4]);
 
-    sqlite3_step(stmt);
+
+    int status =  sqlite3_step(stmt);
+
+    //si il y a un resultat
+    if(status == SQLITE_ROW) {
+
+        uint32_t idnode[5];
+
+        idnode[0] = sqlite3_column_int(stmt, 0);
+        idnode[1] = sqlite3_column_int(stmt, 1);
+        idnode[2] = sqlite3_column_int(stmt, 2);
+        idnode[3] = sqlite3_column_int(stmt, 3);
+        idnode[4] = sqlite3_column_int(stmt, 4);
 
 
-    uint32_t idnode[5];
+        getNode(from, idnode, node);
 
-    idnode[0] = sqlite3_column_int(stmt, 0);
-    idnode[1] = sqlite3_column_int(stmt, 1);
-    idnode[2] = sqlite3_column_int(stmt, 2);
-    idnode[3] = sqlite3_column_int(stmt, 3);
-    idnode[4] = sqlite3_column_int(stmt, 4);
-
-
-    getNode(from,idnode, node);
+    }
 
     sqlite3_finalize(stmt);
 
@@ -286,21 +297,30 @@ char* getfilepath(Node * from,char nom[]){
     //https://www.sqlite.org/c3ref/bind_blob.html
     sqlite3_bind_text(stmt,1,nom, sizeof(nom), SQLITE_STATIC);
 
-    sqlite3_step(stmt);
+    int status =  sqlite3_step(stmt);
 
-    char * cheminbuffer;
-    // utilisation d'un buffer car le pointeur disparait après sqlite3_finalize(stmt)
-    cheminbuffer = sqlite3_column_text(stmt, 0);
+    //si il y a un resultat
+    if(status == SQLITE_ROW) {
 
-    char *chemin = malloc(sizeof(cheminbuffer));
-    strcpy(chemin,cheminbuffer);
+        char *cheminbuffer;
+        // utilisation d'un buffer car le pointeur disparait après sqlite3_finalize(stmt)
+        cheminbuffer = sqlite3_column_text(stmt, 0);
 
-    sqlite3_finalize(stmt);
+        char *chemin = malloc(sizeof(cheminbuffer));
+        strcpy(chemin, cheminbuffer);
 
-    //sqlite3_close(from->db);
+        sqlite3_finalize(stmt);
 
+        return chemin;
 
-    return chemin;
+    }else{
+
+        sqlite3_finalize(stmt);
+
+        return "";
+
+    }
+
 
 }
 
@@ -333,33 +353,38 @@ void getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
     sqlite3_bind_int(stmt,5,hashnom[4]);
 
 
-    sqlite3_step(stmt);
+    int status =  sqlite3_step(stmt);
+
+    //si il y a un resultat
+    if(status == SQLITE_ROW) {
+
+        uint32_t idnode[5];
+
+        idnode[0] = sqlite3_column_int(stmt, 0);
+        idnode[1] = sqlite3_column_int(stmt, 1);
+        idnode[2] = sqlite3_column_int(stmt, 2);
+        idnode[3] = sqlite3_column_int(stmt, 3);
+        idnode[4] = sqlite3_column_int(stmt, 4);
 
 
-    uint32_t idnode[5];
+        getNode(from, idnode, node);
 
-    idnode[0] = sqlite3_column_int(stmt, 0);
-    idnode[1] = sqlite3_column_int(stmt, 1);
-    idnode[2] = sqlite3_column_int(stmt, 2);
-    idnode[3] = sqlite3_column_int(stmt, 3);
-    idnode[4] = sqlite3_column_int(stmt, 4);
+        for (int i = 0; i < 5; i++) {
+            fichier->idnode[i] = idnode[i];
+        }
+        for (int i = 5; i < 10; i++) {
+            fichier->hashfichier[i - 5] = sqlite3_column_int(stmt, i);
+        }
+        char *nom = sqlite3_column_text(stmt, 10);
+        for (int i = 0; i < 5; i++) {
+            fichier->nom[i] = nom[i];
+        }
+        fichier->taille = sqlite3_column_int(stmt, 11);
+        for (int i = 0; i < 5; i++) {
+            fichier->hashnom[i] = hashnom[i];
+        }
 
 
-    getNode(from,idnode, node);
-
-    for(int i=0; i<5; i++){
-        fichier->idnode[i] = idnode[i];
-    }
-    for(int i=5; i<10; i++){
-        fichier->hashfichier[i-5] = sqlite3_column_int(stmt, i);
-    }
-    char * nom = sqlite3_column_text(stmt, 10);
-    for(int i=0; i<5; i++){
-        fichier->nom[i] = nom[i];
-    }
-    fichier->taille = sqlite3_column_int(stmt,11);
-    for(int i=0; i<5; i++){
-        fichier->hashnom[i] = hashnom[i];
     }
 
     sqlite3_finalize(stmt);

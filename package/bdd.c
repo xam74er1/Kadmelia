@@ -98,6 +98,8 @@ void getNode(Node * from,uint32_t id[5], Node *node) {
         node->addr_ip.sin_port = port;
         node->addr_ip.sin_family = AF_INET; // IPv4
 
+    } else{
+        node = NULL ;
     }
 
     sqlite3_finalize(stmt);
@@ -241,6 +243,8 @@ void findNode(Node * from,uint32_t hash[5], Node *node){
 
         getNode(from, idnode, node);
 
+    }else{
+        node = NULL ;
     }
 
     sqlite3_finalize(stmt);
@@ -385,6 +389,9 @@ void getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
         }
 
 
+    }else{
+        fichier = NULL;
+        node = NULL ;
     }
 
     sqlite3_finalize(stmt);

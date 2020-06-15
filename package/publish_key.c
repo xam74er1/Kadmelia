@@ -16,6 +16,7 @@ void * publish_key(Node * from,char * fileName){
 
     int * hashName = hashString(fileName);
     int * hashF = hashFile(path);
+
     int sizeFie = fileSize(path);
 
     int nameLength = strlen(fileName)+1;

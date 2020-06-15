@@ -1,4 +1,8 @@
 //
+// Created by root on 6/15/20.
+//
+
+//
 // Created by root on 6/14/20.
 //
 
@@ -9,6 +13,7 @@
 #include "../event/lisent.h"
 #include "../package/find_value.h"
 #include "../utilitaires/hashFile.h"
+#include "../package/SendFileTCP.h"
 
 /*
  * Le but de ce test est de :
@@ -32,15 +37,7 @@ int main(){
     addVoisin(proprieteFichier,stoquage);
     addVoisin(question,stoquage);
 
-    Fichier f;
 
-    strcpy(f.nom,"test.txt");
-    char * path ="test.txt";
-
-
-    printf("\n\n\n \033[0;33mEnregistrent en BDD \033[0m \n");
-    //On save en BD le chemain
-    setlocalfile(stoquage,f.nom,path);
 
 
     pthread_t t1,t2,t3;
@@ -53,16 +50,8 @@ int main(){
 
     printf("\n\n\n\n Apres thread : \n\n\n");
 
-    printf("\n\n\n \033[0;33mPublication de la clef\033[0m \n");
-    //on publie le fichier
-    publish_key(proprieteFichier,f.nom);
 
-    printf("\n\n\n \033[0;33mRechsse du fichier\033[0m \n");
-    uint32_t  * hashName = hashString(f.nom);
-
-     sleep(5);
-    find_value(question,stoquage,hashName);
-
+    testTCP(question,stoquage);
 
 
     pthread_join(t1,NULL);

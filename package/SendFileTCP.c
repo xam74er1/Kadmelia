@@ -5,7 +5,8 @@
 #include "SendFileTCP.h"
 #include "bdd.h"
 
-void send_tcp_file(Node * from,Node * to , char * path){
+void send_tcp_file(Node * from,int sock, char * path){
+    printf("Send tcp file\n");
     //int sendto(int socket, char *buffer, int length, int flags,struct sockaddr *address, int address_len);
     //ssize_t send(int s, const void *buf, size_t len, int flags);
     char buff[Nmax];
@@ -13,15 +14,15 @@ void send_tcp_file(Node * from,Node * to , char * path){
     FILE *f=NULL;
     f=fopen(path,"r");
 
-
     if (f != NULL) {
         while ((bytesRead = fread(buff, 1, Nmax, f)) > 0) {
-            write(to->sock_tcp, buff, Nmax);
+            write(sock, buff, Nmax);
         }
     }
 }
 //int accept(int sockfd, struct sockaddr *adresse, socklen_t *longueur);
-void write_file(Node *from, int confd,char *path){
+void write_file(Node *from, int sock, char *path){
+    printf("\nwrite file\n");
     char buff[Nmax];
     size_t bytesRead = 0;
     FILE *fp=NULL;
@@ -30,14 +31,14 @@ void write_file(Node *from, int confd,char *path){
     int count = 0;
 
 
-    while ( (retread=read(confd,buff,Nmax)) > 0){
+    while ((retread=read(sock, buff, Nmax)) > 0){
         fwrite(buff,retread,1,fp);
         count++;
     }
     printf("the file was received successfully \n");
     printf("the new file created is add1.txt \n");
     close(fp);
-
+close(sock);
     if(count!=0){
         printf("Fichier recus ");
 
@@ -49,25 +50,30 @@ void write_file(Node *from, int confd,char *path){
 }
 
 void accecpt_to_send_file(Node * from){
+    printf("accpt send file\n");
+    struct sockaddr_in cli;
+    int length = sizeof(from->addr_ip);
     //on accepte la conncetion
-    int confd=accept(from->sock_tcp,(SA*)&from->addr_ip,&from->addr_ip);
+    int confd=accept(from->sock_tcp,(SA*)&cli,&length);
     int retread;
 
  char * buff[255];
 
     if(confd==-1){
-        perror("Erreur lors de la connextion... ");
+        perror("Erreur lors de la connextion B... \n");
      //   exit(1);
     }else{
+printf("connextion ok \n");
 
         //on as lire les donne envoyer
         retread=read(confd,buff,255);
+        printf("data recus\n");
         //si on a bien lus les donne
         if(retread!=0){
             char * path = getfilepath(from,buff);
             //on verifie que le chemain existe bien
             if(path!=0){
-                write_file(from,confd,path);
+            send_tcp_file(from,confd,path);
             }else{
                 //Si non on ferme la connextion
                 close(from->sock_tcp);
@@ -79,26 +85,57 @@ void accecpt_to_send_file(Node * from){
 }
 
 void requeste_file(Node * from,Node * to,char * fileName){
-
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    printf("requete file\n");
     //on commence par ce connexte au pair qui possede la donne
-    int connexion=connect(from->sock_tcp,(SA*)&to->addr_ip,sizeof(to->addr_ip));
+    int connexion=connect(sockfd,&to->addr_ip,sizeof(to->addr_ip));
 
     if(connexion==-1){
         perror("Erreur de connexion...");
-    }
+    }else {
+        printf("connection succe requete file \n");
 
-    int size = strlen(fileName)+1;
+        sleep(1);
+        int size = strlen(fileName) + 1;
 //Je luis envois le chemin
+printf("end sleep\n");
+
+
     write(to->sock_tcp, fileName, size);
 
-    char * loc = getPipeFromId(from->id);
-
-    char * tmp = concat(loc,"/");
-
-    char * path = concat(tmp,fileName);
-
-    write_file(from,from->sock_tcp,path);
 
 
+        printf("tcp envoyer\n");
+        char *loc = getPipeFromId(from->id);
 
+        char *tmp = concat(loc, "/");
+
+        char *path = concat(tmp, fileName);
+        sleep(1);
+        write_file(from, sockfd, path);
+
+    }
+
+}
+
+void testTCP(Node * from,Node * to){
+    sleep(0.1);
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    printf("requete file\n");
+    printNode(to);
+    //on commence par ce connexte au pair qui possede la donne
+    int connexion=connect(sockfd,&to->addr_ip,sizeof(to->addr_ip));
+
+    if(connexion==-1) {
+        perror("Erreur de connexion A...");
+    }else{
+        printf("sucesse\n");
+        char * str = "aaaaaaaaaa---";
+        int size = strlen(str)+1;
+        printf("beforewrite\n");
+        sleep(0.1);
+        write(to->sock_tcp, str, size);
+        printf("ned");
+     //   close(sockfd);
+    }
 }

@@ -94,18 +94,24 @@ void addVoisin(Node *original, Node *voisin){
 }
 
 void iniAddr(Node * node){
+    int sock, yes = 1;
 
-    // Creating socket file descriptor
-    if ( (node->sock_udp = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
-        perror("socket creation failed");
-        exit(EXIT_FAILURE);
-    }
 
     if ( (node->sock_tcp = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
         perror("socket creation failed");
         exit(EXIT_FAILURE);
     }
 
+    if (setsockopt(node->sock_tcp, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+        	            perror("setsockopt");
+        	            exit(1);
+    }
+
+    // Creating socket file descriptor
+    if ( (node->sock_udp = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+        perror("socket creation failed");
+        exit(EXIT_FAILURE);
+    }
 
 
     memset(&node->addr_ip, 0, sizeof(node->addr_ip));

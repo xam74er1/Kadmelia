@@ -57,7 +57,7 @@ int createDatabase (Node * from) {
 
 void getNode(Node * from,uint32_t id[5], Node *node) {
 
-    fprintf(stderr, "fonction getNode\n");
+    printf( "fonction getNode\n");
 
     char *err_msg = 0;
 
@@ -109,7 +109,7 @@ void getNode(Node * from,uint32_t id[5], Node *node) {
 
 void setNode( Node * from,Node *node ) {
 
-    fprintf(stderr, "fonction setNode\n");
+    printf("fonction setNode\n");
 
     uint32_t id[5];
 
@@ -155,7 +155,7 @@ void setNode( Node * from,Node *node ) {
 
 void SetFile(Node * from, Fichier *fichier){
 
-    fprintf(stderr, "fonction setFile\n");
+    printf("fonction setFile\n");
 
 
     char *err_msg = 0;
@@ -203,7 +203,7 @@ void SetFile(Node * from, Fichier *fichier){
 
 void findNode(Node * from,uint32_t hash[5], Node *node){
 
-    fprintf(stderr, "fonction findNode\n");
+    printf("fonction findNode\n");
 
 
     char *err_msg = 0;
@@ -255,7 +255,7 @@ void findNode(Node * from,uint32_t hash[5], Node *node){
 
 void setlocalfile(Node * from,char nom[], char chemin[]){
 
-    fprintf(stderr, "fonction setLocalfile\n");
+    printf("fonction setLocalfile\n");
 
 
     char *err_msg = 0;
@@ -285,7 +285,7 @@ void setlocalfile(Node * from,char nom[], char chemin[]){
 
 char* getfilepath(Node * from,char nom[]){
 
-    fprintf(stderr, "fonction getfilepath\n");
+    printf("fonction getfilepath\n");
 
 
     char *err_msg = 0;
@@ -328,9 +328,9 @@ char* getfilepath(Node * from,char nom[]){
 
 }
 
-void getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
-
-    fprintf(stderr, "fonction get fichier\n");
+char getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
+    char hasFound = 1;
+    printf("fonction get fichier\n");
 
 
     char *err_msg = 0;
@@ -380,9 +380,7 @@ void getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
             fichier->hashfichier[i - 5] = sqlite3_column_int(stmt, i);
         }
         char *nom = sqlite3_column_text(stmt, 10);
-        for (int i = 0; i < 5; i++) {
-            fichier->nom[i] = nom[i];
-        }
+    strcpy(fichier->nom,nom);
         fichier->taille = sqlite3_column_int(stmt, 11);
         for (int i = 0; i < 5; i++) {
             fichier->hashnom[i] = hashnom[i];
@@ -390,12 +388,15 @@ void getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
 
 
     }else{
+        printf("\033[0;31mAucun fichier %s trouve\033[0m \n",getPipeFromId(hashnom));
         fichier = NULL;
         node = NULL ;
+hasFound = 0;
     }
 
     sqlite3_finalize(stmt);
 
    // sqlite3_close(from->db);
+   return hasFound;
 
 }

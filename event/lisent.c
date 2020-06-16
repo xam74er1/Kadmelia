@@ -16,7 +16,7 @@ _Noreturn void receive_paquette(Node * from){
 
     int tmp = bind(from->sock_udp, (const struct sockaddr *) &from->addr_ip,
                    sizeof(from->addr_ip));
-     tmp += bind(from->sock_tcp, (const struct sockaddr *) &from->addr_ip,
+     tmp = bind(from->sock_tcp, (const struct sockaddr *) &from->addr_ip,
                    sizeof(from->addr_ip));
     // Bind the socket with the server address
     if ( tmp< 0) {
@@ -41,8 +41,6 @@ _Noreturn void receive_paquette(Node * from){
 
     while (1) {
 
-
-
         Node test;
 
         // set listenfd and udpfd in readset
@@ -59,6 +57,7 @@ printf("apres select\n");
         if (FD_ISSET(from->sock_tcp, &rset)) {
 
             accecpt_to_send_file(from);
+            //testRecoisTCP(from);
         }
     }
 }

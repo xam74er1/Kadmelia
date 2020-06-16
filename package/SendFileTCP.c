@@ -16,9 +16,10 @@ void send_tcp_file(Node * from,int sock, char * path){
 
     if (f != NULL) {
         while ((bytesRead = fread(buff, 1, Nmax, f)) > 0) {
-            write(sock, buff, Nmax);
+            write(sock, buff, bytesRead);
         }
     }
+    close(sock);
 }
 //int accept(int sockfd, struct sockaddr *adresse, socklen_t *longueur);
 void write_file(Node *from, int sock, char *path){
@@ -31,14 +32,28 @@ void write_file(Node *from, int sock, char *path){
     int count = 0;
 
 
+    char * str = "ntm";
+
+
+
     while ((retread=read(sock, buff, Nmax)) > 0){
-        fwrite(buff,retread,1,fp);
+        printf("%d data recus \n",retread);
+
+        int lentght = strlen(str)+1;
+
+      int nbw =  fwrite(buff,retread,1,fp);
+
+
+      printf("nbw %d\n",nbw);
         count++;
     }
     printf("the file was received successfully \n");
     printf("the new file created is add1.txt \n");
-    close(fp);
+    fclose(fp);
 close(sock);
+
+
+
     if(count!=0){
         printf("Fichier recus ");
 
@@ -70,6 +85,9 @@ printf("connextion ok \n");
         printf("data recus\n");
         //si on a bien lus les donne
         if(retread!=0){
+            char * str ;
+
+            strcpy(str,buff);
             char * path = getfilepath(from,buff);
             //on verifie que le chemain existe bien
             if(path!=0){
@@ -101,7 +119,7 @@ void requeste_file(Node * from,Node * to,char * fileName){
 printf("end sleep\n");
 
 
-    write(to->sock_tcp, fileName, size);
+    write(sockfd, fileName, size);
 
 
 
@@ -130,12 +148,23 @@ void testTCP(Node * from,Node * to){
         perror("Erreur de connexion A...");
     }else{
         printf("sucesse\n");
-        char * str = "aaaaaaaaaa---";
+        char * str = "hello world";
         int size = strlen(str)+1;
         printf("beforewrite\n");
         sleep(0.1);
-        write(to->sock_tcp, str, size);
+        write(sockfd, str, size);
         printf("ned");
      //   close(sockfd);
     }
+}
+#define Nbuff 255
+void testRecoisTCP(Node * from){
+    unsigned char buffer[Nbuff];
+    int retread;
+    struct sockaddr_in servaddr,cliaddr;
+    int client,connfd;
+    client=sizeof(cliaddr);
+    connfd=accept(from->sock_tcp,(SA*)&cliaddr,&client);
+    retread=read(connfd,buffer,Nbuff);
+    printf("nb bit read : %d\n",retread);
 }

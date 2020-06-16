@@ -15,7 +15,7 @@ void write_file(Node *from, int sock, char *path);
 void accecpt_to_send_file(Node * from);
 void requeste_file(Node * from,Node * to,char * fileName);
 void testTCP(Node * from,Node * to);
-
+void testRecoisTCP(Node * from);
 
 
 

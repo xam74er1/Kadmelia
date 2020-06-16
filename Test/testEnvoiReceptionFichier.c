@@ -28,10 +28,11 @@ int main(){
     iniIDSimple(proprieteFichier,2);
 
     iniIDSimple(question,3);
+    sleep(0.1);
 
     addVoisin(proprieteFichier,stoquage);
     addVoisin(question,stoquage);
-
+    sleep(0.1);
     Fichier f;
 
     strcpy(f.nom,"test.txt");
@@ -40,7 +41,7 @@ int main(){
 
     printf("\n\n\n \033[0;33mEnregistrent en BDD \033[0m \n");
     //On save en BD le chemain
-    setlocalfile(stoquage,f.nom,path);
+    setlocalfile(proprieteFichier,f.nom,path);
 
 
     pthread_t t1,t2,t3;
@@ -60,7 +61,7 @@ int main(){
     printf("\n\n\n \033[0;33mRechsse du fichier\033[0m \n");
     uint32_t  * hashName = hashString(f.nom);
 
-     sleep(5);
+     sleep(1);
     find_value(question,stoquage,hashName);
 
 

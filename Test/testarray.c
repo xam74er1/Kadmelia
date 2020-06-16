@@ -1,4 +1,4 @@
-#include "../kademiliaTest.h"
+#include "kademiliaTest.h"
 
 void peupleNode(Node * tab[], int nb){
     for (int i = 0; i < nb; ++i) {

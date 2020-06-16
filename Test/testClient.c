@@ -10,6 +10,7 @@
 #define Nbuff 2
 int main(int argc,char**argv)
 {
+    char * name = "serveur.txt";
     printf("Start clinet \n");
     int sockfd;
     char fname[25];
@@ -29,7 +30,10 @@ int main(int argc,char**argv)
 
     inet_pton(AF_INET,"8080",&servaddr.sin_addr);
     connect(sockfd,(SA*)&servaddr,sizeof(servaddr));
-
+int size = strlen(name)+1;
+    write(sockfd,name,size);
+    close(sockfd);
+    /*
     char buffer[Nbuff];
     FILE *f=NULL;
     f=fopen("client.txt","r");
@@ -49,6 +53,7 @@ int main(int argc,char**argv)
 
     printf("the file was sent successfully \n");
     close(f);
-    free(f);
+
+     */
 }
 

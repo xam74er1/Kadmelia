@@ -8,9 +8,10 @@
 #define SA struct sockaddr
 #define LISTENQ 5
 #define port 8080
-#define Nbuff 2
+#define Nbuff 255
 int main(int argc,char**argv)
-{
+{    int retread;
+    unsigned char buffer[Nbuff];
     int fd,sockfd,listenfd,connfd;
     pid_t childpid;
     socklen_t client;
@@ -20,12 +21,21 @@ int main(int argc,char**argv)
     servaddr.sin_family=AF_INET;
     servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
     servaddr.sin_port=htons(port);
+
+
     bind(listenfd,(SA*)&servaddr,sizeof(servaddr));
     listen(listenfd,LISTENQ);
+
+
     client=sizeof(cliaddr);
     connfd=accept(listenfd,(SA*)&cliaddr,&client);
 
-    unsigned char buffer[Nbuff];
+
+    retread=read(connfd,buffer,Nbuff);
+
+    printf("nb bit read : %d\n",retread);
+
+/*
     FILE *write_ptr;
 
     write_ptr = fopen("serveur.txt","wb");  // w for write, b for binary
@@ -34,7 +44,7 @@ int main(int argc,char**argv)
     }else{
         printf("ok \n");
     }
-    int retread;
+
     while ( (retread=read(connfd,buffer,Nbuff)) > 0){
        //  fprintf(fp,"%d",97);
         printf("%c-\n",buffer[0]);
@@ -45,7 +55,8 @@ int main(int argc,char**argv)
     }
     printf("the file was received successfully \n");
     printf("the new file created is add1.txt \n");
-    close( write_ptr);
 
+    close( write_ptr);
+*/
 
 }

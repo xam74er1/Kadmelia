@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "utilitaires/utilitaire.h"
+#include "../utilitaires/utilitaire.h"
 
 #include <pthread.h>
 #include <stdint.h>

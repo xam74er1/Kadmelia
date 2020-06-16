@@ -9,7 +9,7 @@ int main(){
     char * str = "ntm";
     FILE *write_ptr;
 
-    write_ptr = fopen("serveur.txt","wb");  // w for write, b for binary
+    write_ptr = fopen("serveurZZZZ.txt","wb");  // w for write, b for binary
 
     fwrite(str,strlen(str),1,write_ptr); // write 10 bytes from our buffer
     fwrite(str,strlen(str),1,write_ptr); // write 10 bytes from our buffer

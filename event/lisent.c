@@ -16,16 +16,25 @@ _Noreturn void receive_paquette(Node * from){
 
     int tmp = bind(from->sock_udp, (const struct sockaddr *) &from->addr_ip,
                    sizeof(from->addr_ip));
-     tmp = bind(from->sock_tcp, (const struct sockaddr *) &from->addr_ip,
-                   sizeof(from->addr_ip));
-    // Bind the socket with the server address
+
     if ( tmp< 0) {
 
-        perror("bind failed");
+        perror("bind failed UDP");
         exit(EXIT_FAILURE);
     }else{
 
-        printf("bind ok %d \n");
+        printf("bind udp ok %d \n");
+    }
+
+     tmp = bind(from->sock_tcp, (const struct sockaddr *) &from->addr_ip,sizeof(from->addr_ip));
+    // Bind the socket with the server address
+    if ( tmp< 0) {
+
+        perror("bind failed TCP");
+        exit(EXIT_FAILURE);
+    }else{
+
+        printf("bind tcp ok %d \n");
     }
 
     printNode((struct Node *) from);

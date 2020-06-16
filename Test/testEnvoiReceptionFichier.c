@@ -35,8 +35,8 @@ int main(){
     sleep(0.1);
     Fichier f;
 
-    strcpy(f.nom,"test.txt");
-    char * path ="test.txt";
+    strcpy(f.nom,"test.jpg");
+    char * path ="test.jpg";
 
 
     printf("\n\n\n \033[0;33mEnregistrent en BDD \033[0m \n");

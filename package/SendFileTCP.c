@@ -12,7 +12,7 @@ void send_tcp_file(Node * from,int sock, char * path){
     char buff[Nmax];
     size_t bytesRead = 0;
     FILE *f=NULL;
-    f=fopen(path,"r");
+    f=fopen(path,"rb");
 
     if (f != NULL) {
         while ((bytesRead = fread(buff, 1, Nmax, f)) > 0) {
@@ -20,6 +20,7 @@ void send_tcp_file(Node * from,int sock, char * path){
         }
     }
     close(sock);
+    fclose(f);
 }
 //int accept(int sockfd, struct sockaddr *adresse, socklen_t *longueur);
 void write_file(Node *from, int sock, char *path){

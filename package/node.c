@@ -95,7 +95,7 @@ void addVoisin(Node *original, Node *voisin){
 
 void iniAddr(Node * node){
     int sock, yes = 1;
-
+int port = (rand()%512)+1024;
 
     if ( (node->sock_tcp = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
         perror("socket creation failed");
@@ -116,8 +116,8 @@ void iniAddr(Node * node){
 
     memset(&node->addr_ip, 0, sizeof(node->addr_ip));
     node->addr_ip.sin_family    = AF_INET; // IPv4
-    node->addr_ip.sin_addr.s_addr = htonl (INADDR_ANY);//Adresse ip
-     node->addr_ip.sin_port = htons(portNum); //On le set a 0 pour lui dire de prendre un port par defaut pour la communication
+    node->addr_ip.sin_addr.s_addr = INADDR_ANY;//Adresse ip
+     node->addr_ip.sin_port = htons(port);// On le set a 0 pour lui dire de prendre un port par defaut pour la communication
      portNum++;
 }
 

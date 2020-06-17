@@ -4,7 +4,7 @@ CC	 = gcc
 CFLAGS	 = -W -Wall -pedantic
 LDFLAGS	 = -lpthread -lcrypto -ldl
 EXEC=kad
-CMD = echo ok & ./sk.sh lib & make all
+CMD = mpg123 .secret/assenceur.mp3 & make all
 
 all: $(EXEC)
 

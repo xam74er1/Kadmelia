@@ -3,6 +3,7 @@
 //
 
 #include "lisent.h"
+#include <sys/select.h>
 #include "../package/send_udp.h"
 #include "../package/SendFileTCP.h"
 

@@ -8,7 +8,16 @@
 #include "fichier.h"
 #include "bdd.h"
 #include "SendFileTCP.h"
+#include "../utilitaires/hashFile.h"
+#include "find_node.h"
 #include <netinet/in.h>
+
+void find_file(Node * from,char * fileName){
+    uint32_t  * hashName = hashString(fileName);
+    //on trouve la node la plus proche
+    Node * proche = find_node(from,hashName);
+    find_value(from,proche,hashName);
+}
 
 void * find_value(Node * from,Node * to,int * hash){
     printf("find value du hash %s \n",getPipeFromId(hash));

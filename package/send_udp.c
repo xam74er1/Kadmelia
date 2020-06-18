@@ -11,7 +11,9 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static int count = 0;
 
 void send_udp(Node *from, Node *to, char type, void *data, long size) {
-    printf("send udp\n");
+    if(DEBUG) {
+        printf("send udp\n");
+    }
 //Cette partie du code est assez technique
 //On vas recopie dans une zone memoire toute les donne a envoye en un seul paquet udp
 
@@ -39,9 +41,11 @@ void send_udp(Node *from, Node *to, char type, void *data, long size) {
 
     //on oublie pas de libre la zone emoire
     free(dest);
+    if(DEBUG) {
+        printf("send udp ok to \n");
+        printNode((struct Node *) to);
+    }
 
-    printf("send udp ok to \n");
-    printNode((struct Node *) to);
 }
 
 
@@ -57,8 +61,6 @@ char type ='a';
                          &len);
         Node test ;
 
-
-
             Node * reponce = malloc(sizeof(Node));
         memcpy(&type,buffer,sizeof(char));
         memcpy(&reponce->id,buffer+sizeof(char),IDLENGTH_INT*sizeof(uint32_t));
@@ -67,8 +69,9 @@ char type ='a';
 
 
 //Juste de l'affichage pour le debug
-
-        printf("Node recus %s \n", getPipeFromId((int *) &reponce->id));
+    if(DEBUG) {
+        printf("Node reçue %s \n", getPipeFromId((int *) &reponce->id));
+    }
 
         //On evite de mettre la node tout de suite pour le processuce de bootstrap
         //Si non elle renvois son propre ID vus que le progame la conais deja (et cest pas tres uttille)
@@ -107,7 +110,7 @@ char type ='a';
                 break;
 
             default:
-                printf("Message incunus");
+                printf("Message inconnu\n");
         }
     if(buffer) {
        // free(&reponce);

@@ -64,7 +64,7 @@ void iniCommun(Node * node){
     createDatabase(node);
 }
 
-//inilise id
+//initialise id
 int iniID(Node * node) {
 
     for (int i = 0; i < IDLENGTH_INT; ++i) {
@@ -80,7 +80,7 @@ void setNodeId(Node *fromNode, int id[IDLENGTH_INT]){
 }
 
 
-//Met une un id simple au node , uttilise pour les test
+//Met un id simple au node , utilise pour les tests
 void setNodeIdSimple(Node *fromNode, int id){
     fromNode->id[0] =id;
     for (int i = 1; i < IDLENGTH_INT; ++i) {
@@ -103,7 +103,7 @@ int port = (rand()%512)+1024;
     }
 
     if (setsockopt(node->sock_tcp, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
-        	            perror("setsockopt");
+        	            perror("setsocket");
         	            exit(1);
     }
 
@@ -122,11 +122,15 @@ int port = (rand()%512)+1024;
 }
 
 void * addNodeToBukket(Node * from,Node * toAdd){
-
-printf("%s a un nvx voisin %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->id));
+    if(DEBUG) {
+        printf("%s a un nouveau voisin %s \n", getPipeFromId(from->id), getPipeFromId(toAdd->id));
+    }
     Bucket * bucket = find_Bucket(from,toAdd);
     if(!bucket){
-        fprintf(stderr, "Erreur : de bukket pour %s il ne peux pas insere : %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->id));
+        if(DEBUG) {
+            fprintf(stderr, "Erreur : de bucket pour %s il ne peut pas inserer : %s \n", getPipeFromId(from->id),
+                    getPipeFromId(toAdd->id));
+        }
     }
     add_node_to_bukket(toAdd,bucket);
     //ajout a la base de donne

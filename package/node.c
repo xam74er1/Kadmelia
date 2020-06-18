@@ -122,12 +122,12 @@ int port = (rand()%512)+1024;
 }
 
 void * addNodeToBukket(Node * from,Node * toAdd){
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("%s a un nouveau voisin %s \n", getPipeFromId(from->id), getPipeFromId(toAdd->id));
     }
     Bucket * bucket = find_Bucket(from,toAdd);
     if(!bucket){
-        if(DEBUG) {
+        if(DEBUG==1) {
             fprintf(stderr, "Erreur : de bucket pour %s il ne peut pas inserer : %s \n", getPipeFromId(from->id),
                     getPipeFromId(toAdd->id));
         }

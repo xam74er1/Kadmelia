@@ -7,7 +7,7 @@
 #include "../utilitaires/console_color.h"
 
 void send_tcp_file(Node * from,int sock, char * path){
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("Send tcp file\n");
     }
     //int sendto(int socket, char *buffer, int length, int flags,struct sockaddr *address, int address_len);
@@ -27,7 +27,7 @@ void send_tcp_file(Node * from,int sock, char * path){
 }
 //int accept(int sockfd, struct sockaddr *adresse, socklen_t *longueur);
 void write_file(Node *from, int sock, char *path){
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("\nwrite file\n");
     }
 
@@ -44,12 +44,12 @@ void write_file(Node *from, int sock, char *path){
 
 
     while ((retread=read(sock, buff, Nmax)) > 0){
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("%d data recus \n", retread);
         }
 
       int nbw =  fwrite(buff,retread,1,fp);
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("nbw %d\n", nbw);
         }
         count++;
@@ -75,7 +75,7 @@ close(sock);
 }
 
 void accecpt_to_send_file(Node * from){
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("accept send file\n");
     }
     struct sockaddr_in cli;
@@ -90,12 +90,12 @@ void accecpt_to_send_file(Node * from){
         perror("Erreur lors de la connexion B... \n");
      //   exit(1);
     }else{
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("connexion ok \n");
         }
         //on as lire les donne envoyer
         retread=read(confd,buff,255);
-                if(DEBUG) {
+                if(DEBUG==1) {
                     printf("data reçue\n");
                 }
         //si on a bien lus les donne
@@ -103,10 +103,11 @@ void accecpt_to_send_file(Node * from){
             char * str ;
 
             strcpy(str,buff);
-            if(DEBUG) {
+
+            if(DEBUG==1) {
                 printf("fichier voulus %s \n",str);
             }
-            char * path = getfilepath(from,str);
+            char * path = getfilepath(from,buff);
             //on verifie que le chemain existe bien
             if(path!=0){
             send_tcp_file(from,confd,path);
@@ -122,7 +123,7 @@ void accecpt_to_send_file(Node * from){
 
 void requeste_file(Node * from,Node * to,char * fileName){
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("requete file\n");
     }
     //on commence par ce connexte au pair qui possede la donne
@@ -131,21 +132,21 @@ void requeste_file(Node * from,Node * to,char * fileName){
     if(connexion==-1){
         perror("Erreur de connexion...\n");
     }else {
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("connection success : file request\n");
         }
 
         sleep(1);
         int size = strlen(fileName) + 1;
 //Je luis envois le chemin
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("end sleep\n");
         }
 
     write(sockfd, fileName, size);
 
 
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("tcp envoyé\n");
         }
         char *loc = getPipeFromId(from->id);

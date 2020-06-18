@@ -11,7 +11,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static int count = 0;
 
 void send_udp(Node *from, Node *to, char type, void *data, long size) {
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("send udp\n");
     }
 //Cette partie du code est assez technique
@@ -41,7 +41,7 @@ void send_udp(Node *from, Node *to, char type, void *data, long size) {
 
     //on oublie pas de libre la zone emoire
     free(dest);
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("send udp ok to \n");
         printNode((struct Node *) to);
     }
@@ -69,7 +69,7 @@ char type ='a';
 
 
 //Juste de l'affichage pour le debug
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("Node reçue %s \n", getPipeFromId((int *) &reponce->id));
     }
 

@@ -20,7 +20,7 @@ void find_file(Node * from,char * fileName){
 }
 
 void * find_value(Node * from,Node * to,int * hash){
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("find value du hash %s \n", getPipeFromId(hash));
     }
     send_udp(from,to,MSG_FIND_VALUE,hash,IDLENGTH_SIZE);
@@ -40,7 +40,8 @@ void * receive_find_value(Node * from,Node * container,void * buffer){
 
     int size = sizeof(char)+ sizeof(Fichier)+sizeof(struct sockaddr_in);
     //Donne qui seron renvoyer
-    void * data = calloc(1,size);
+    void * data ;
+    data = malloc(size);
 
     //Si on a des donne (par defaut on dit que non)
 
@@ -55,6 +56,10 @@ void * receive_find_value(Node * from,Node * container,void * buffer){
         memcpy(data+decalage,&node->addr_ip,sizeof(struct sockaddr_in));
         decalage+=sizeof(Fichier);
 
+    }else{
+        decalage = 0;
+        memcpy(data+decalage,&hasData,sizeof(char));
+        decalage+=1;
     }
 
     //on renvois la reponc en UDP
@@ -74,7 +79,7 @@ void * receive_find_value_rep(Node * from,Node * container,void * buffer){
     decalage+=sizeof(char);
 
     if(hashData){
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("\033[0;32mclef trouve on commence le dl \n");
         }
         Fichier * f = malloc(sizeof(Fichier));
@@ -88,7 +93,7 @@ void * receive_find_value_rep(Node * from,Node * container,void * buffer){
             n.id[i] =f->idnode[i];
         }
 
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("le fichier a telechage est %s avec une taille %d \n", f->nom, f->taille);
             printf("on tellecharge les donne sur la node : \n");
             printNode(&n);

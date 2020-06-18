@@ -14,13 +14,13 @@
 
 
 Node * find_node(struct Node *node, int *id) {
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("Debut de la recherche de voisins pour id : %s \n", getPipeFromId(id));
     }
     int nbVoisin = 1;
     Node ** tabVoisin = malloc(sizeof(Node *)*255);
     tabVoisin[0] = nodeLaPlusProche(node,id);
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("Node la plus proche au début : %s \n", getPipeFromId(tabVoisin[0]->id));
     }
 
@@ -37,7 +37,7 @@ Node * find_node(struct Node *node, int *id) {
         }
         //On revois le pointeur vers la node recus
         Node * recus = (Node *) node->buffer;
-        if(DEBUG) {
+        if(DEBUG==1) {
 
             printf("Le voisin temporaire le plus proche est :  \n");
             printNode(recus);
@@ -95,7 +95,7 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
     for(int j = 1;j<node->listBucket[i]->nbVoisin;j++){
         int *delta = xordistanceTableau(node->listBucket[i]->bukket[j]->id, valleur, IDLENGTH_INT);
         //SI la node actelle est plus pete que la node min , elle devien le nvx min
-        if(DEBUG) {
+        if(DEBUG==1) {
             printf("A min : %s , delta : %s \n", getPipeFromId(min), getPipeFromId(delta));
         }
         if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
@@ -113,7 +113,7 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
             for(int j = 0;j<node->listBucket[i]->nbVoisin;j++){
                 int *delta = xordistanceTableau(node->listBucket[i]->bukket[j]->id, valleur, IDLENGTH_INT);
                 //SI la node actelle est plus pete que la node min , elle devien le nvx min
-                if(DEBUG) {
+                if(DEBUG==1) {
                     printf("B min : %s , delta : %s \n", getPipeFromId(min), getPipeFromId(delta));
                 }
                 if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
@@ -155,7 +155,7 @@ void receive_find_node(Node * from,Node * to,void * buffer){
     if (GreatOrEqueals(delta, xor, IDLENGTH_INT) > 0) {
     close = from;
     }
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("Node renvoyée %s\n", getPipeFromId(close->id));
     }
     int size = IDLENGTH_SIZE+sizeof(struct sockaddr_in);
@@ -178,7 +178,7 @@ void receive_closed_node(Node * from,Node * to,void * buffer){
     int decalage = sizeof(char)+IDLENGTH_SIZE;
     memcpy(&close->id,buffer+decalage,IDLENGTH_SIZE);
     memcpy(&close->addr_ip,buffer+decalage+IDLENGTH_SIZE,sizeof(struct sockaddr_in));
-    if(DEBUG) {
+    if(DEBUG==1) {
         printNode(close);
     }
 

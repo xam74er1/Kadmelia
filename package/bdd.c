@@ -21,7 +21,7 @@ int createDatabase (Node * from) {
 
         return 1;
     } else {
-        if(DEBUG) {
+        if(DEBUG==1) {
             fprintf(stdout, "database opened successfully\n");
         }
     }
@@ -48,7 +48,7 @@ int createDatabase (Node * from) {
 
         return 1;
     } else {
-        if(DEBUG) {
+        if(DEBUG==1) {
             fprintf(stdout, "Tables created successfully\n");
         }
     }
@@ -59,7 +59,7 @@ int createDatabase (Node * from) {
 }
 
 void getNode(Node * from,uint32_t id[5], Node *node) {
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("fonction getNode\n");
     }
 
@@ -113,7 +113,7 @@ void getNode(Node * from,uint32_t id[5], Node *node) {
 
 void setNode( Node * from,Node *node ) {
 
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("fonction setNode\n");
     }
 
@@ -161,7 +161,7 @@ void setNode( Node * from,Node *node ) {
 
 void SetFile(Node * from, Fichier *fichier){
 
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("fonction setFile\n");
     }
 
@@ -209,7 +209,7 @@ void SetFile(Node * from, Fichier *fichier){
 
 void findNode(Node * from,uint32_t hash[5], Node *node){
 
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("fonction findNode\n");
     }
 
@@ -263,7 +263,7 @@ void findNode(Node * from,uint32_t hash[5], Node *node){
 
 void setlocalfile(Node * from,char nom[], char chemin[]){
 
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("fonction setLocalfile\n");
     }
 
@@ -295,7 +295,7 @@ void setlocalfile(Node * from,char nom[], char chemin[]){
 
 char* getfilepath(Node * from,char nom[]){
 
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("fonction getfilepath\n");
     }
 
@@ -343,7 +343,7 @@ char* getfilepath(Node * from,char nom[]){
 char getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
     char hasFound = 1;
 
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("fonction get fichier\n");
     }
 

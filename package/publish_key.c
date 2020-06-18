@@ -56,7 +56,7 @@ void * publish_key(Node * from,char * fileName){
 }
 
 void * receive_publish_key(Node * from,Node * container,void * buffer){
-    if(DEBUG) {
+    if(DEBUG==1) {
         printf("reveive publish key \n");
     }
     uint32_t * hashName = malloc(IDLENGTH_SIZE);

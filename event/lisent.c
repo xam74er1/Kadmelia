@@ -65,7 +65,7 @@ _Noreturn void receive_paquette(Node * from){
 
         nready = select(max, &rset, NULL, NULL, NULL);
         if(DEBUG) {
-            printf("paquette recus \n");
+            printf("\n");
         }
         //Si on recois de UDP
         if (FD_ISSET(from->sock_udp, &rset)) {

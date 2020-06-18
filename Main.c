@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
             if (path != NULL) {
                 char *fname = lastStr(otherPart, "/\\");
 
-                if(DEBUG){
+                if(DEBUG==1){
                     printf("chemain ajoute %s \n",path);
                 }
                 setlocalfile(&node, fname, path);

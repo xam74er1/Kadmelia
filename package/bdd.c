@@ -168,8 +168,6 @@ void SetFile(Node * from, Fichier *fichier){
 
     char *err_msg = 0;
 
-
-
     sqlite3_stmt *stmt;
 
 
@@ -284,8 +282,8 @@ void setlocalfile(Node * from,char nom[], char chemin[]){
     }
 
     //https://www.sqlite.org/c3ref/bind_blob.html
-    sqlite3_bind_text(stmt,1,nom,sizeof(nom), SQLITE_STATIC);
-    sqlite3_bind_text(stmt,2,chemin,sizeof(chemin), SQLITE_STATIC);
+    sqlite3_bind_text(stmt,1,nom,strlen(nom)+1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt,2,chemin,strlen(chemin)+1, SQLITE_STATIC);
 
     sqlite3_step(stmt);
 
@@ -313,7 +311,7 @@ char* getfilepath(Node * from,char nom[]){
     }
 
     //https://www.sqlite.org/c3ref/bind_blob.html
-    sqlite3_bind_text(stmt,1,nom, sizeof(nom), SQLITE_STATIC);
+    sqlite3_bind_text(stmt,1,nom, strlen(nom)+1, SQLITE_STATIC);
 
     int status =  sqlite3_step(stmt);
 
@@ -324,7 +322,7 @@ char* getfilepath(Node * from,char nom[]){
         // utilisation d'un buffer car le pointeur disparait après sqlite3_finalize(stmt)
         cheminbuffer = sqlite3_column_text(stmt, 0);
 
-        char *chemin = malloc(sizeof(cheminbuffer));
+        char *chemin = malloc(strlen(cheminbuffer)+1);
         strcpy(chemin, cheminbuffer);
 
         sqlite3_finalize(stmt);

@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
     clr_reset();
 
     while (!isEnd) {
-        sleep(0.1);
+        sleep(1);
         clr_blue();
         printf("\nSelectionner votre action (add | find | exit ) : \n");
         clr_reset();
@@ -176,7 +176,9 @@ int main(int argc, char **argv) {
             if (path != NULL) {
                 char *fname = lastStr(otherPart, "/\\");
 
-
+                if(DEBUG){
+                    printf("chemain ajoute %s \n",path);
+                }
                 setlocalfile(&node, fname, path);
                 publish_key(&node, fname);
 

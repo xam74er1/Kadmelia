@@ -103,7 +103,10 @@ void accecpt_to_send_file(Node * from){
             char * str ;
 
             strcpy(str,buff);
-            char * path = getfilepath(from,buff);
+            if(DEBUG) {
+                printf("fichier voulus %s \n",str);
+            }
+            char * path = getfilepath(from,str);
             //on verifie que le chemain existe bien
             if(path!=0){
             send_tcp_file(from,confd,path);

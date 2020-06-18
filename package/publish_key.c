@@ -42,7 +42,7 @@ void * publish_key(Node * from,char * fileName){
     //on trouve la node ou on publie
     struct Node * toPublish = find_node(from,hashName);
 
-    printf("\033[0;33m Node trouve on lui envoie les donne \033[0m \n");
+    printf("\033[0;33m Node trouvée, on lui envoie les données \033[0m \n");
 
     send_udp(from,toPublish,MSG_PUBLISH_KEY,data,size);
 
@@ -75,5 +75,5 @@ printf("reveive publish key \n");
     Fichier * f = malloc(sizeof(Fichier));
     inFichier(f,container,hashName,hashFile,fileSize,fileName);
     SetFile(from,f);
-    printf("\033[0;32m clef %s publier avec succe dans %s \033[0m \n ",getPipeFromId(hashName),getPipeFromId(from->id));
+    printf("\033[0;32m clef %s publiée avec succès dans %s \033[0m \n ",getPipeFromId(hashName),getPipeFromId(from->id));
 }

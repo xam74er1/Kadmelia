@@ -137,13 +137,13 @@ int main(int argc, char **argv) {
         find_node(&node,node.id);
     }else{
 clr_Red();
-printf("Attention vus n'est connecte a aucun noeud du reseau , il est possbile que le programe ne marche pas dans que vous n'avez pas ete contacte par une node");
+printf("Attention vous n'êtes connecté à aucun noeud réseau. Il est possible que le programme ne marche pas tant que vous n'avez pas été contacté par une node\n");
 clr_reset();
     }
         while(!isEnd){
             sleep(0.1);
             clr_blue();
-            printf("Selectione votre action (add | find | exit ) : \n");
+            printf("Selectionner votre action (add | find | exit ) : \n");
             clr_reset();
             scanf(" %254[^\n]%n", str, &nbChar);
 
@@ -166,13 +166,13 @@ printf(" add + %s \n",otherPart);
                 if(path!=NULL) {
                     char *fname = lastStr(otherPart, "/\\");
 
-                    printf("file name %s , reald path %s \n", fname, path);
+                    printf("file name %s , read path %s \n", fname, path);
                      setlocalfile(&node,fname,path);
                        publish_key(&node,fname);
 
                 }else{
                     clr_Red();
-                    printf("Impossible de trouve le fichier %s ",otherPart);
+                    printf("Impossible de trouver le fichier %s \n\n",otherPart);
                     clr_reset();
                 }
             }else if(strcmp(firtEllem, "find") == 0){
@@ -183,7 +183,7 @@ printf(" add + %s \n",otherPart);
                 break;
             }else{
                 clr_Red();
-                printf("Argument \"%s\" invalide \n",firtEllem);
+                printf("Argument \"%s\" est invalide \n",firtEllem);
                 clr_reset();
 
             }

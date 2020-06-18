@@ -56,17 +56,17 @@ close(sock);
 
 
     if(count!=0){
-        printf("Fichier recus ");
+        printf("Fichier reçu");
 
     }else{
-        printf("Aucun fichier recus ");
+        printf("Aucun fichier reçu ");
     }
 
 
 }
 
 void accecpt_to_send_file(Node * from){
-    printf("accpt send file\n");
+    printf("accept send file\n");
     struct sockaddr_in cli;
     int length = sizeof(from->addr_ip);
     //on accepte la conncetion
@@ -76,14 +76,14 @@ void accecpt_to_send_file(Node * from){
  char * buff[255];
 
     if(confd==-1){
-        perror("Erreur lors de la connextion B... \n");
+        perror("Erreur lors de la connexion B... \n");
      //   exit(1);
     }else{
-printf("connextion ok \n");
+printf("connexion ok \n");
 
         //on as lire les donne envoyer
         retread=read(confd,buff,255);
-        printf("data recus\n");
+        printf("data reçue\n");
         //si on a bien lus les donne
         if(retread!=0){
             char * str ;
@@ -112,7 +112,7 @@ void requeste_file(Node * from,Node * to,char * fileName){
     if(connexion==-1){
         perror("Erreur de connexion...");
     }else {
-        printf("connection succe requete file \n");
+        printf("connection success : file request\n");
 
         sleep(1);
         int size = strlen(fileName) + 1;
@@ -124,7 +124,7 @@ printf("end sleep\n");
 
 
 
-        printf("tcp envoyer\n");
+        printf("tcp envoyé\n");
         char *loc = getPipeFromId(from->id);
 
         char *tmp = concat(loc, "/");
@@ -140,7 +140,7 @@ printf("end sleep\n");
 void testTCP(Node * from,Node * to){
     sleep(0.1);
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    printf("requete file\n");
+    printf("requête file\n");
     printNode(to);
     //on commence par ce connexte au pair qui possede la donne
     int connexion=connect(sockfd,&to->addr_ip,sizeof(to->addr_ip));
@@ -148,13 +148,13 @@ void testTCP(Node * from,Node * to){
     if(connexion==-1) {
         perror("Erreur de connexion A...");
     }else{
-        printf("sucesse\n");
+        printf("success\n");
         char * str = "hello world";
         int size = strlen(str)+1;
         printf("beforewrite\n");
         sleep(0.1);
         write(sockfd, str, size);
-        printf("ned");
+        printf("ned \n");
      //   close(sockfd);
     }
 }

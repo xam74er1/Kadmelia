@@ -15,11 +15,11 @@
 
 Node * find_node(struct Node *node, int *id) {
 
-    printf("Debut de la rechesse de voisin pour id : %s \n",getPipeFromId(id));
+    printf("Debut de la recherche de voisins pour id : %s \n",getPipeFromId(id));
     int nbVoisin = 1;
     Node ** tabVoisin = malloc(sizeof(Node *)*255);
     tabVoisin[0] = nodeLaPlusProche(node,id);
-    printf("Node la plus proche au debut : %s \n",getPipeFromId(tabVoisin[0]->id));
+    printf("Node la plus proche au début : %s \n",getPipeFromId(tabVoisin[0]->id));
 
 
     int  delta = 1;
@@ -149,7 +149,7 @@ void receive_find_node(Node * from,Node * to,void * buffer){
     if (GreatOrEqueals(delta, xor, IDLENGTH_INT) > 0) {
     close = from;
     }
-printf("Node renvoyer %s\n",getPipeFromId(close->id));
+printf("Node renvoyée %s\n",getPipeFromId(close->id));
     int size = IDLENGTH_SIZE+sizeof(struct sockaddr_in);
     void * data = malloc(size);
 //On copy id et addr ip

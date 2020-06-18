@@ -9,7 +9,7 @@
 
 Node * find_node(struct Node *node, int *id);
 /*
- * Renvois la node la plus proche de la valleur au sesn xditance
+ * Renvois la node la plus proche de la valeur au sens ditance
  */
 Node * nodeLaPlusProche(Node * node, int * valleur);
 

@@ -11,7 +11,7 @@
 _Noreturn void receive_paquette(Node * from){
     fd_set rset;
     //Nbr de donne maximale que le serveur UDP peux recevoire = 255 node + type + id sender
-    printf("recefe udp \n");
+    printf("receive udp \n");
     uint32_t id[IDLENGTH_INT];
     int max,nready;
 
@@ -42,9 +42,9 @@ _Noreturn void receive_paquette(Node * from){
 
     FD_ZERO(&rset);
     if ( listen(from->sock_tcp, 10)!=0){
-        perror("Error lisent");
+        perror("Error listen \n");
     }else{
-        printf("lisent is ok");
+        printf("listen is ok\n");
     }
 
     max = (from->sock_tcp>from->sock_udp ? from->sock_tcp : from->sock_udp)+1;
@@ -58,7 +58,7 @@ _Noreturn void receive_paquette(Node * from){
         FD_SET(from->sock_udp, &rset);
 
         nready = select(max, &rset, NULL, NULL, NULL);
-printf("apres select\n");
+printf("après select\n");
         //Si on recois de UDP
         if (FD_ISSET(from->sock_udp, &rset)) {
             receive_udp(from);

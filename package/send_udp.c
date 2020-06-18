@@ -68,7 +68,7 @@ char type ='a';
 
 //Juste de l'affichage pour le debug
 
-        printf("Node recus %s \n", getPipeFromId((int *) &reponce->id));
+        printf("Node reçue %s \n", getPipeFromId((int *) &reponce->id));
 
         //On evite de mettre la node tout de suite pour le processuce de bootstrap
         //Si non elle renvois son propre ID vus que le progame la conais deja (et cest pas tres uttille)
@@ -107,7 +107,7 @@ char type ='a';
                 break;
 
             default:
-                printf("Message incunus");
+                printf("Message inconnu\n");
         }
     if(buffer) {
        // free(&reponce);

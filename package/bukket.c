@@ -80,7 +80,7 @@ if(bucket) {
     }
 */
 }else{
-    fprintf(stderr, "Erreur : bukket null (vous ne pouvez pas vous insere vous meme pour %s) \n");
+    fprintf(stderr, "Erreur : bucket null (vous ne pouvez pas vous inserer vous même pour %s) \n\n");
 }
 
 

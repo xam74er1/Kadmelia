@@ -72,7 +72,9 @@ if(bucket) {
     if (bucket->nbVoisin < K_BUCKET) {
         bucket->nbVoisin++;
     }
-    printf("Ajout du voisin %s \n", getPipeFromId(node->id));
+    if(DEBUG) {
+        printf("Ajout du voisin %s \n", getPipeFromId(node->id));
+    }
 /*
     //Pas sur de cette setion a voir si elle pose des pbr
     if(bucket->nbVoisin>K_BUCKET){
@@ -80,7 +82,9 @@ if(bucket) {
     }
 */
 }else{
-    fprintf(stderr, "Erreur : bucket null (vous ne pouvez pas vous inserer vous même pour %s) \n\n");
+    if(DEBUG) {
+        fprintf(stderr, "Erreur : bucket null (vous ne pouvez pas vous inserer vous même pour %s) \n\n");
+    }
 }
 
 

@@ -34,6 +34,7 @@
 #define DIRECTORYTEST "nodespace" //Nom du dossie qui contien les test
 #define NBBUCKET 160
 
+#define DEBUG 0
 
 //Mesage uttilise
 

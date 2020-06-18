@@ -14,13 +14,15 @@
 
 
 Node * find_node(struct Node *node, int *id) {
-
-    printf("Debut de la recherche de voisins pour id : %s \n",getPipeFromId(id));
+    if(DEBUG) {
+        printf("Debut de la recherche de voisins pour id : %s \n", getPipeFromId(id));
+    }
     int nbVoisin = 1;
     Node ** tabVoisin = malloc(sizeof(Node *)*255);
     tabVoisin[0] = nodeLaPlusProche(node,id);
-    printf("Node la plus proche au début : %s \n",getPipeFromId(tabVoisin[0]->id));
-
+    if(DEBUG) {
+        printf("Node la plus proche au début : %s \n", getPipeFromId(tabVoisin[0]->id));
+    }
 
     int  delta = 1;
 
@@ -35,17 +37,17 @@ Node * find_node(struct Node *node, int *id) {
         }
         //On revois le pointeur vers la node recus
         Node * recus = (Node *) node->buffer;
+        if(DEBUG) {
 
-
-        printf("Le voisin temporaire le plus proche est :  \n");printNode(recus);
+            printf("Le voisin temporaire le plus proche est :  \n");
+            printNode(recus);
+        }
 
         int * nvx = xordistanceTableau(id, recus->id, IDLENGTH_INT);
         int * old = xordistanceTableau(id,tabVoisin[nbVoisin-1]->id,IDLENGTH_INT);
 
 
-
         delta = GreatOrEqueals(old,nvx,IDLENGTH_INT);
-
 
 
         if(delta>0) {
@@ -58,7 +60,7 @@ Node * find_node(struct Node *node, int *id) {
 printf("\n");
     }while(delta>0);
 
-    printf("\033[1;35m Le voisin final est %s \033[0m \n\n",getPipeFromId(tabVoisin[nbVoisin-1]->id));
+    printf("\033[1;35m Nous avons trouve la node %s \033[0m \n\n",getPipeFromId(tabVoisin[nbVoisin-1]->id));
 
     return tabVoisin[nbVoisin-1];
 }
@@ -93,7 +95,9 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
     for(int j = 1;j<node->listBucket[i]->nbVoisin;j++){
         int *delta = xordistanceTableau(node->listBucket[i]->bukket[j]->id, valleur, IDLENGTH_INT);
         //SI la node actelle est plus pete que la node min , elle devien le nvx min
-        printf("A min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
+        if(DEBUG) {
+            printf("A min : %s , delta : %s \n", getPipeFromId(min), getPipeFromId(delta));
+        }
         if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
             free(min);
             min = delta;
@@ -109,7 +113,9 @@ Node *nodeLaPlusProche(Node *node, int *valleur) {
             for(int j = 0;j<node->listBucket[i]->nbVoisin;j++){
                 int *delta = xordistanceTableau(node->listBucket[i]->bukket[j]->id, valleur, IDLENGTH_INT);
                 //SI la node actelle est plus pete que la node min , elle devien le nvx min
-                printf("B min : %s , delta : %s \n",getPipeFromId(min),getPipeFromId(delta));
+                if(DEBUG) {
+                    printf("B min : %s , delta : %s \n", getPipeFromId(min), getPipeFromId(delta));
+                }
                 if (GreatOrEqueals(min, delta, IDLENGTH_INT) > 0) {
                     free(min);
                     min = delta;
@@ -149,7 +155,9 @@ void receive_find_node(Node * from,Node * to,void * buffer){
     if (GreatOrEqueals(delta, xor, IDLENGTH_INT) > 0) {
     close = from;
     }
-printf("Node renvoyée %s\n",getPipeFromId(close->id));
+    if(DEBUG) {
+        printf("Node renvoyée %s\n", getPipeFromId(close->id));
+    }
     int size = IDLENGTH_SIZE+sizeof(struct sockaddr_in);
     void * data = malloc(size);
 //On copy id et addr ip
@@ -170,8 +178,9 @@ void receive_closed_node(Node * from,Node * to,void * buffer){
     int decalage = sizeof(char)+IDLENGTH_SIZE;
     memcpy(&close->id,buffer+decalage,IDLENGTH_SIZE);
     memcpy(&close->addr_ip,buffer+decalage+IDLENGTH_SIZE,sizeof(struct sockaddr_in));
-
-    printNode(close);
+    if(DEBUG) {
+        printNode(close);
+    }
 
 from->buffer = close;
 

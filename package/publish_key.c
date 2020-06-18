@@ -8,6 +8,7 @@
 #include "../utilitaires/hashFile.h"
 #include "../utilitaires/fileTabChar.h"
 #include "bdd.h"
+#include "../utilitaires/console_color.h"
 
 void * publish_key(Node * from,char * fileName){
 //Change le fichier pour quil sois logique
@@ -41,16 +42,23 @@ void * publish_key(Node * from,char * fileName){
 
     //on trouve la node ou on publie
     struct Node * toPublish = find_node(from,hashName);
-
-    printf("\033[0;33m Node trouvée, on lui envoie les données \033[0m \n");
+    if(DEBUG) {
+        printf("\033[0;33m Node trouvée, on lui envoie les données \033[0m \n");
+    }
 
     send_udp(from,toPublish,MSG_PUBLISH_KEY,data,size);
+
+    clr_green();
+    printf("Le fichier a ete publie sur le reseau !!");
+    clr_reset();
 
   //  free(data);
 }
 
 void * receive_publish_key(Node * from,Node * container,void * buffer){
-printf("reveive publish key \n");
+    if(DEBUG) {
+        printf("reveive publish key \n");
+    }
     uint32_t * hashName = malloc(IDLENGTH_SIZE);
     uint32_t * hashFile = malloc(IDLENGTH_SIZE);
     int fileSize;
@@ -75,5 +83,8 @@ printf("reveive publish key \n");
     Fichier * f = malloc(sizeof(Fichier));
     inFichier(f,container,hashName,hashFile,fileSize,fileName);
     SetFile(from,f);
-    printf("\033[0;32m clef %s publiée avec succès dans %s \033[0m \n ",getPipeFromId(hashName),getPipeFromId(from->id));
+    if(DEBUG) {
+        printf("\033[0;32m clef %s publiée avec succès dans %s \033[0m \n ", getPipeFromId(hashName),
+               getPipeFromId(from->id));
+    }
 }

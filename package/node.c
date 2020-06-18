@@ -122,11 +122,15 @@ int port = (rand()%512)+1024;
 }
 
 void * addNodeToBukket(Node * from,Node * toAdd){
-
-printf("%s a un nouveau voisin %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->id));
+    if(DEBUG) {
+        printf("%s a un nouveau voisin %s \n", getPipeFromId(from->id), getPipeFromId(toAdd->id));
+    }
     Bucket * bucket = find_Bucket(from,toAdd);
     if(!bucket){
-        fprintf(stderr, "Erreur : de bucket pour %s il ne peut pas inserer : %s \n",getPipeFromId(from->id),getPipeFromId(toAdd->id));
+        if(DEBUG) {
+            fprintf(stderr, "Erreur : de bucket pour %s il ne peut pas inserer : %s \n", getPipeFromId(from->id),
+                    getPipeFromId(toAdd->id));
+        }
     }
     add_node_to_bukket(toAdd,bucket);
     //ajout a la base de donne

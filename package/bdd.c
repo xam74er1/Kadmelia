@@ -21,7 +21,9 @@ int createDatabase (Node * from) {
 
         return 1;
     } else {
-        fprintf(stdout, "database opened successfully\n");
+        if(DEBUG) {
+            fprintf(stdout, "database opened successfully\n");
+        }
     }
 
     //creation table
@@ -46,8 +48,9 @@ int createDatabase (Node * from) {
 
         return 1;
     } else {
-
-        fprintf(stdout, "Tables created successfully\n");
+        if(DEBUG) {
+            fprintf(stdout, "Tables created successfully\n");
+        }
     }
 
     //sqlite3_close(from->db);
@@ -56,8 +59,9 @@ int createDatabase (Node * from) {
 }
 
 void getNode(Node * from,uint32_t id[5], Node *node) {
-
-    printf( "fonction getNode\n");
+    if(DEBUG) {
+        printf("fonction getNode\n");
+    }
 
     char *err_msg = 0;
 
@@ -109,7 +113,9 @@ void getNode(Node * from,uint32_t id[5], Node *node) {
 
 void setNode( Node * from,Node *node ) {
 
-    printf("fonction setNode\n");
+    if(DEBUG) {
+        printf("fonction setNode\n");
+    }
 
     uint32_t id[5];
 
@@ -155,7 +161,9 @@ void setNode( Node * from,Node *node ) {
 
 void SetFile(Node * from, Fichier *fichier){
 
-    printf("fonction setFile\n");
+    if(DEBUG) {
+        printf("fonction setFile\n");
+    }
 
 
     char *err_msg = 0;
@@ -203,7 +211,9 @@ void SetFile(Node * from, Fichier *fichier){
 
 void findNode(Node * from,uint32_t hash[5], Node *node){
 
-    printf("fonction findNode\n");
+    if(DEBUG) {
+        printf("fonction findNode\n");
+    }
 
 
     char *err_msg = 0;
@@ -255,7 +265,9 @@ void findNode(Node * from,uint32_t hash[5], Node *node){
 
 void setlocalfile(Node * from,char nom[], char chemin[]){
 
-    printf("fonction setLocalfile\n");
+    if(DEBUG) {
+        printf("fonction setLocalfile\n");
+    }
 
 
     char *err_msg = 0;
@@ -285,7 +297,9 @@ void setlocalfile(Node * from,char nom[], char chemin[]){
 
 char* getfilepath(Node * from,char nom[]){
 
-    printf("fonction getfilepath\n");
+    if(DEBUG) {
+        printf("fonction getfilepath\n");
+    }
 
 
     char *err_msg = 0;
@@ -330,7 +344,10 @@ char* getfilepath(Node * from,char nom[]){
 
 char getfichier(Node * from,uint32_t hashnom[5], Fichier *fichier, Node *node){
     char hasFound = 1;
-    printf("fonction get fichier\n");
+
+    if(DEBUG) {
+        printf("fonction get fichier\n");
+    }
 
 
     char *err_msg = 0;

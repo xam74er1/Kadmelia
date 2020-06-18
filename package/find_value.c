@@ -20,7 +20,9 @@ void find_file(Node * from,char * fileName){
 }
 
 void * find_value(Node * from,Node * to,int * hash){
-    printf("find value du hash %s \n",getPipeFromId(hash));
+    if(DEBUG) {
+        printf("find value du hash %s \n", getPipeFromId(hash));
+    }
     send_udp(from,to,MSG_FIND_VALUE,hash,IDLENGTH_SIZE);
 }
 
@@ -72,7 +74,9 @@ void * receive_find_value_rep(Node * from,Node * container,void * buffer){
     decalage+=sizeof(char);
 
     if(hashData){
-        printf("\033[0;32mclef trouve on commence le dl \n");
+        if(DEBUG) {
+            printf("\033[0;32mclef trouve on commence le dl \n");
+        }
         Fichier * f = malloc(sizeof(Fichier));
         Node n ;
 
@@ -84,16 +88,16 @@ void * receive_find_value_rep(Node * from,Node * container,void * buffer){
             n.id[i] =f->idnode[i];
         }
 
-
-        printf("le fichier a telechage est %s avec une taille %d \n",f->nom,f->taille);
-        printf("on tellecharge les donne sur la node : \n");
-        printNode(&n);
-
+        if(DEBUG) {
+            printf("le fichier a telechage est %s avec une taille %d \n", f->nom, f->taille);
+            printf("on tellecharge les donne sur la node : \n");
+            printNode(&n);
+        }
         requeste_file(from,&n,f->nom);
 
     }else{
         //Ne pas remove (cet pas du debug)
-        printf("\033[0;31mNous n'avons pas pus trouve les donne corespondate a votre film \033[0m\n ");
+        printf("\033[1;31mNous n'avons pas pus trouve les donne corespondate a votre film \033[0m\n ");
     }
 
 
